@@ -1,0 +1,77 @@
+{
+  "variables": {
+    "source_image_family": "windows-2019-dc-gvlk",
+    "image_family": "windows-2019-dc",
+    "instance_cores": "4",
+    "instance_mem_gb": "8",
+    "disk_size_gb": "50",
+    "disk_type": "network-ssd",
+    "use_ipv4_nat": "true",
+    "winrm_password": "{{ env `PACKER_WINRM_PASSWORD` }}"
+  },
+  "builders": [
+    {
+      "type": "yandex",
+      "source_image_family": "{{ user `source_image_family` }}",
+      "instance_name": "packer-{{ user `image_family` }}",
+      "image_family": "{{ user `image_family` }}",
+      "image_name": "{{ user `image_family` }}-{{ isotime | clean_resource_name }}",
+      "instance_cores": "{{ user `instance_cores` }}",
+      "instance_mem_gb": "{{ user `instance_mem_gb` }}",
+      "disk_size_gb": "{{ user `disk_size_gb` }}",
+      "disk_type": "{{ user `disk_type` }}",
+      "use_ipv4_nat": "{{ user `use_ipv4_nat` }}",
+      "metadata": {
+        "winrm_password": "{{ user `winrm_password` }}"
+      },
+      "metadata_from_file": {
+        "user-data": "./scripts/windows/userdata.ps1"
+      },
+      "communicator": "winrm",
+      "winrm_username": "Administrator",
+      "winrm_password": "{{ user `winrm_password` }}",
+      "winrm_use_ssl": true,
+      "winrm_insecure": true,
+      "winrm_use_ntlm": true
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "./scripts/windows/setup_complete/",
+      "destination": "C:\\Windows\\Setup\\Scripts\\"
+    },
+    {
+      "type": "file",
+      "source": "../../_common/windows/Enable-WinRM.ps1",
+      "destination": "C:\\Windows\\Setup\\Scripts\\"
+    },
+    {
+      "type": "file",
+      "source": "./answer_files/windows-2019/unattend.xml",
+      "destination": "C:\\Program Files\\Cloudbase Solutions\\Cloudbase-Init\\conf\\unattend.xml"
+    },
+    {
+      "type": "powershell",
+      "scripts": [
+        "../../_common/windows/Install-Chocolatey.ps1",
+        "../../_common/windows/Install-OpenSSH.ps1",
+        "../../_common/windows/Install-WindowsUpdates.ps1"
+      ],
+      "elevated_user": "Administrator",
+      "elevated_password": "{{ user `winrm_password` }}"
+    },
+    {
+      "type": "windows-restart",
+      "restart_timeout": "15m"
+    },
+    {
+      "type": "powershell",
+      "inline": [
+        "& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit /unattend:\"C:\\Program Files\\Cloudbase Solutions\\Cloudbase-Init\\conf\\unattend.xml\"",
+        "while ($true) { $ImageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select-Object ImageState; if ($ImageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $ImageState.ImageState; Start-Sleep -Seconds 10 } else { break } }",
+        "Stop-Computer -Force"
+      ]
+    }
+  ]
+}

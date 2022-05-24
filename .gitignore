@@ -1,0 +1,8 @@
+_images/*
+.DS_Storebuilds/*
+builds/
+output-*/
+packer_cache/
+*.log
+README.md
+iso/

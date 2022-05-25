@@ -44,8 +44,7 @@ Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies
 
 # SET WINRM
 'Set WinRM' | Out-Serial
-
-& .\Enable-WinRM.ps1
+. "$PSScriptRoot\Enable-WinRM.ps1" 
 
 # FIREWALL
 'Enable ICMP Rule' | Out-Serial
@@ -54,7 +53,7 @@ Get-NetFirewallRule -Name 'vm-monitoring-icmpv4' | Set-NetFirewallRule -Enabled 
 # DELETE ITSELF
 'Remove itself' | Out-Serial
 Remove-Item -Path 'C:\Program Files\Cloudbase Solutions\Cloudbase-Init\LocalScripts\*'
-Remove-Item -Path 'C:\Windows\Setup\Scripts\*'
+Remove-Item -Path 'C:\Windows\Setup\Scripts\SetupComplete.ps1'
 
 # COMPLETE
 "Complete, logs located at: $env:windir\Panther\SetupComplete.log" | Out-Serial

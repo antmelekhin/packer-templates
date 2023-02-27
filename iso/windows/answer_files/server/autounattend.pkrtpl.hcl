@@ -49,8 +49,8 @@
                 <OSImage>
                     <InstallFrom>
                         <MetaData wcm:action="add">
-                            <Key>/IMAGE/INDEX</Key>
-                            <Value>2</Value>
+                            <Key>/IMAGE/NAME</Key>
+                            <Value>Windows Server 2019 SERVERSTANDARDCORE</Value>
                         </MetaData>
                     </InstallFrom>
                     <InstallTo>
@@ -90,18 +90,32 @@
     <settings pass="oobeSystem">
         <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <UserAccounts>
+                %{ if username == "Administrator" }
                 <AdministratorPassword>
-                    <Value>Passw0rd</Value>
+                    <Value>${password}</Value>
                     <PlainText>true</PlainText>
                 </AdministratorPassword>
+                %{ else }
+                <LocalAccounts>
+                    <LocalAccount wcm:action="add">
+                        <Password>
+                            <Value>${password}</Value>
+                            <PlainText>true</PlainText>
+                        </Password>
+                        <Group>Administrators</Group>
+                        <DisplayName>${username}</DisplayName>
+                        <Name>${username}</Name>
+                    </LocalAccount>
+                </LocalAccounts>
+                %{ endif }
             </UserAccounts>
             <AutoLogon>
                 <Password>
-                    <Value>Passw0rd</Value>
+                    <Value>${password}</Value>
                     <PlainText>true</PlainText>
                 </Password>
                 <Enabled>true</Enabled>
-                <Username>Administrator</Username>
+                <Username>${username}</Username>
                 <LogonCount>1</LogonCount>
             </AutoLogon>
             <FirstLogonCommands>
@@ -113,5 +127,4 @@
             </FirstLogonCommands>
         </component>
     </settings>
-    <cpi:offlineImage cpi:source="wim:c:/wsim/windows_server_2019/install.wim#Windows Server 2019 SERVERSTANDARD" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
 </unattend>

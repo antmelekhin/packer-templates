@@ -16,7 +16,9 @@ packer {
 
 // Defines the local variables.
 
-locals {}
+locals {
+  vm_guest_input_locales = join(";", var.vm_guest_input_locales)
+}
 
 // Defines the builder configuration blocks.
 
@@ -44,8 +46,13 @@ source "hyperv-iso" "windows" {
     "autounattend.xml" = templatefile(
       "${path.root}/answer_files/server/autounattend.pkrtpl.hcl",
       {
-        username = var.admin_username,
-        password = var.admin_password
+        username      = var.admin_username,
+        password      = var.admin_password,
+        timezone      = var.vm_guest_timezone,
+        input_locale  = local.vm_guest_input_locales,
+        system_locale = var.vm_guest_system_locale,
+        ui_language   = var.vm_guest_ui_language,
+        user_locale   = var.vm_guest_user_locale
       }
     ),
   }
@@ -79,8 +86,13 @@ source "virtualbox-iso" "windows" {
     "autounattend.xml" = templatefile(
       "${path.root}/answer_files/server/autounattend.pkrtpl.hcl",
       {
-        username = var.admin_username,
-        password = var.admin_password
+        username      = var.admin_username,
+        password      = var.admin_password,
+        timezone      = var.vm_guest_timezone,
+        input_locale  = local.vm_guest_input_locales,
+        system_locale = var.vm_guest_system_locale,
+        ui_language   = var.vm_guest_ui_language,
+        user_locale   = var.vm_guest_user_locale,
       }
     ),
   }
@@ -104,18 +116,37 @@ build {
     restart_timeout = "15m"
   }
 
-  // provisioner "powershell" {
-  //   elevated_password = var.admin_password
-  //   elevated_user     = var.admin_username
-  //   script            = "../../_common/windows/Start-Cleanup.ps1"
-  // }
+  provisioner "powershell" {
+    elevated_password = var.admin_password
+    elevated_user     = var.admin_username
+    script            = "../../_common/windows/Start-Cleanup.ps1"
+  }
 
-  // provisioner "windows-restart" {}
+  provisioner "windows-restart" {}
 
   provisioner "file" {
-    source      = "./answer_files/server/unattend.xml"
+    source      = "./scripts/setup_complete/"
+    destination = "C:\\Windows\\Setup\\Scripts\\"
+  }
+
+  provisioner "file" {
+    source      = "../../_common/windows/Enable-WinRM.ps1"
+    destination = "C:\\Windows\\Setup\\Scripts\\Enable-WinRM.ps1"
+  }
+
+  provisioner "file" {
+    content = templatefile(
+      "${path.root}/answer_files/server/unattend.pkrtpl.hcl",
+      {
+        timezone      = var.vm_guest_timezone,
+        input_locale  = local.vm_guest_input_locales,
+        system_locale = var.vm_guest_system_locale,
+        ui_language   = var.vm_guest_ui_language,
+        user_locale   = var.vm_guest_user_locale,
+      }
+    )
     destination = "C:\\Windows\\System32\\Sysprep\\unattend.xml"
-}
+  }
 
   provisioner "powershell" {
     inline = [

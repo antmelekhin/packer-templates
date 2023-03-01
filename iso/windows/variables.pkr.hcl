@@ -46,12 +46,38 @@ variable "admin_password" {
   default = "vagrant"
 }
 
+variable "vm_guest_timezone" {
+  type    = string
+  default = "Russian Standard Time"
+}
+
+variable "vm_guest_input_locales" {
+  type = list(string)
+  default = [
+    "0409:00000409",
+    "0419:00000419"
+  ]
+}
+
+variable "vm_guest_system_locale" {
+  type    = string
+  default = "ru-RU"
+}
+
+variable "vm_guest_ui_language" {
+  type    = string
+  default = "en-US"
+}
+
+variable "vm_guest_user_locale" {
+  type    = string
+  default = "ru-RU"
+}
+
 variable "scripts" {
   type = list(string)
   default = [
       "../../_common/windows/Install-Chocolatey.ps1",
-      "../../_common/windows/Install-OpenSSH.ps1",
-      "./scripts/Install-GuestTools.ps1",
-      // "../../_common/windows/Install-WindowsUpdates.ps1"
+      "./scripts/Install-GuestTools.ps1"
     ]
 }

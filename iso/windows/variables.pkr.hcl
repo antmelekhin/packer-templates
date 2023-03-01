@@ -1,10 +1,12 @@
 variable "headless" {
-  type    = bool
-  default = true
+  description = "Packer defaults to building virtual machines by launching a GUI that shows the console of the machine being built."
+  type        = bool
+  default     = true
 }
 
 variable "iso_urls" {
-  type = list(string)
+  description = "Multiple URLs for the ISO to download."
+  type        = list(string)
   default = [
     "../../_images/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso",
     "https://software-static.download.prss.microsoft.com/pr/download/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso"
@@ -12,47 +14,57 @@ variable "iso_urls" {
 }
 
 variable "iso_checksum" {
-  type    = string
-  default = "./windows.sum"
+  description = "The checksum for the ISO file or virtual hard drive file."
+  type        = string
+  default     = "./windows.sum"
 }
 
 variable "vm_name" {
-  type    = string
-  default = "windows-2019-core"
+  description = "The name of the new virtual machine, without the file extension."
+  type        = string
+  default     = "windows-2019-core"
 }
 
 variable "cpus" {
-  type    = string
-  default = "2"
+  description = "The number of cpus to use for building the VM."
+  type        = string
+  default     = "2"
 }
 
 variable "memory" {
-  type    = string
-  default = "4096"
+  description = "The amount of memory to use for building the VM in megabytes."
+  type        = string
+  default     = "4096"
 }
 
 variable "disk_size" {
-  type    = string
-  default = "51200"
+  description = "The size, in megabytes, of the hard disk to create for the VM."
+  type        = string
+  default     = "51200"
 }
 
 variable "admin_username" {
-  type    = string
-  default = "vagrant"
+  description = "The administrator username that will be create and use to connect to WinRM."
+  type        = string
+  default     = "vagrant"
 }
 
 variable "admin_password" {
-  type    = string
-  default = "vagrant"
+  description = "The administrator's password."
+  description = "The password to use to connect to WinRM."
+  type        = string
+  default     = "vagrant"
 }
 
 variable "vm_guest_timezone" {
-  type    = string
-  default = "Russian Standard Time"
+  description = "The computer's time zone."
+  type        = string
+  default     = "Russian Standard Time"
 }
 
 variable "vm_guest_input_locales" {
-  type = list(string)
+  description = "The system input locale and the keyboard layout."
+  type        = list(string)
   default = [
     "0409:00000409",
     "0419:00000419"
@@ -60,22 +72,26 @@ variable "vm_guest_input_locales" {
 }
 
 variable "vm_guest_system_locale" {
-  type    = string
-  default = "ru-RU"
+  description = "The language for non-Unicode programs."
+  type        = string
+  default     = "ru-RU"
 }
 
 variable "vm_guest_ui_language" {
-  type    = string
-  default = "en-US"
+  description = "The system default user interface (UI) language."
+  type        = string
+  default     = "en-US"
 }
 
 variable "vm_guest_user_locale" {
-  type    = string
-  default = "ru-RU"
+  description = "The per-user settings used for formatting dates, times, currency, and numbers."
+  type        = string
+  default     = "ru-RU"
 }
 
 variable "scripts" {
-  type = list(string)
+  description = "Provisioning scripts."
+  type        = list(string)
   default = [
       "../../_common/windows/Install-Chocolatey.ps1",
       "./scripts/Install-GuestTools.ps1"

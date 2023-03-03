@@ -68,12 +68,7 @@ Write-Output 'Clearing Logs'
 Remove-Item -Path "$env:SystemRoot\Logs\*" -ErrorAction:SilentlyContinue -Recurse
 
 # Clear Event logs
-& wevtutil enum-logs | `
-    Where-Object { ($_ -ne 'Microsoft-Windows-LiveId/Analytic') `
-        -and ($_ -ne 'Microsoft-Windows-LiveId/Operational') `
-        -and ($_ -ne 'Microsoft-Windows-TerminalServices-Licensing/Analytic') `
-        -and ($_ -ne 'Microsoft-Windows-TerminalServices-Licensing/Debug') } | `
-    Foreach-Object { wevtutil clear-log "$_" }
+Get-EventLog -LogName * | ForEach-Object { Clear-EventLog -LogName $_.Log }
 
 Write-Output 'Running Volume Optimizer'
 Optimize-Volume -DriveLetter 'C' -Verbose

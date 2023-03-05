@@ -1,5 +1,4 @@
 // The Packer configuration.
-
 packer {
   required_version = ">= 1.8.3"
   required_plugins {
@@ -15,39 +14,45 @@ packer {
 }
 
 // Defines the local variables.
-
 locals {
+  iso_urls               = var.iso_url == null ? var.iso_urls : [var.iso_url]
+  iso_checksum           = var.iso_checksum == null ? "file:${var.iso_checksum_file}" : var.iso_checksum
+  build_date             = formatdate("YYYYMMDDhhmm", timestamp())
+  vm_name                = "windows-${var.vm_guest_os_version}-${var.vm_guest_os_edition}_${local.build_date}"
+  os_name                = var.vm_guest_os_name == "server" ? "Windows Server" : "Windows"
+  os_edition             = var.vm_guest_os_name == "server" ? "SERVER${upper(var.vm_guest_os_edition)}" : title(var.vm_guest_os_edition)
+  os_image_name          = "${local.os_name} ${var.vm_guest_os_version} ${local.os_edition}"
   vm_guest_input_locales = join(";", var.vm_guest_input_locales)
 }
 
 // Defines the builder configuration blocks.
-
 source "hyperv-iso" "windows" {
-  headless         = var.headless
-  iso_urls         = var.iso_urls
-  iso_checksum     = "file:${var.iso_checksum}"
-  boot_command     = ["<spacebar>"]
-  vm_name          = var.vm_name
-  cpus             = var.cpus
-  memory           = var.memory
-  disk_size        = var.disk_size
-  switch_name      = "Default Switch"
-  generation       = 1
-  communicator     = "winrm"
-  winrm_username   = var.admin_username
-  winrm_password   = var.admin_password
-  winrm_use_ssl    = true
-  winrm_insecure   = true
-  winrm_use_ntlm   = true
-  floppy_files = [
-    "../../_common/windows/Enable-WinRM.ps1"
+  headless = var.headless
+
+  // Virtual Machine Settings
+  vm_name      = local.vm_name
+  cpus         = var.cpus
+  memory       = var.memory
+  disk_size    = var.disk_size
+  switch_name  = "Default Switch"
+  generation   = 1
+
+  // Removable Media Settings
+  iso_urls     = local.iso_urls
+  iso_checksum = local.iso_checksum
+  cd_files = [
+    "../../_common/windows/Enable-WinRM.ps1",
+    "../../_common/windows/Start-Sysprep.ps1",
+    "./scripts/PackerShutdown.bat"
   ]
   cd_content = {
     "autounattend.xml" = templatefile(
-      "${path.root}/answer_files/server/autounattend.pkrtpl.hcl",
+      "${path.root}/answer_files/autounattend.pkrtpl.hcl",
       {
         username      = var.admin_username,
         password      = var.admin_password,
+        image_name    = local.os_image_name,
+        product_key   = var.vm_guest_product_key,
         timezone      = var.vm_guest_timezone,
         input_locale  = local.vm_guest_input_locales,
         system_locale = var.vm_guest_system_locale,
@@ -56,50 +61,73 @@ source "hyperv-iso" "windows" {
       }
     ),
   }
+
+  // Boot and Shutdown Settings
+  boot_command     = ["<spacebar>"]
+  shutdown_command = var.shutdown_command
+
+  // Communicator Settings and Credentials
+  communicator   = "winrm"
+  winrm_use_ssl  = true
+  winrm_insecure = true
+  winrm_use_ntlm = true
+  winrm_username = var.admin_username
+  winrm_password = var.admin_password
 }
 
 source "virtualbox-iso" "windows" {
-  headless             = var.headless
+  headless = var.headless
+
+  // Virtual Machine Settings
+  vm_name              = local.vm_name
   guest_os_type        = "Windows10_64"
-  iso_urls             = var.iso_urls
-  iso_checksum         = "file:${var.iso_checksum}"
-  boot_command         = ["<spacebar>"]
-  vm_name              = var.vm_name
+  cpus                 = var.cpus
+  memory               = var.memory
   hard_drive_interface = "sata"
   disk_size            = var.disk_size
+  firmware             = "bios"
   guest_additions_mode = "upload"
   guest_additions_path = "C:/Windows/Temp/GuestTools.iso"
-  communicator         = "winrm"
-  winrm_username       = var.admin_username
-  winrm_password       = var.admin_password
-  winrm_use_ssl        = true
-  winrm_insecure       = true
-  winrm_use_ntlm       = true
-  vboxmanage = [
-    ["modifyvm", "{{ .Name }}", "--cpus", var.cpus],
-    ["modifyvm", "{{ .Name }}", "--memory", var.memory]
-  ]
-  floppy_files = [
-    "../../_common/windows/Enable-WinRM.ps1"
+
+  // Removable Media Settings
+  iso_urls     = local.iso_urls
+  iso_checksum = local.iso_checksum
+  cd_files = [
+    "../../_common/windows/Enable-WinRM.ps1",
+    "../../_common/windows/Start-Sysprep.ps1",
+    "./scripts/PackerShutdown.bat"
   ]
   cd_content = {
     "autounattend.xml" = templatefile(
-      "${path.root}/answer_files/server/autounattend.pkrtpl.hcl",
+      "${path.root}/answer_files/autounattend.pkrtpl.hcl",
       {
         username      = var.admin_username,
         password      = var.admin_password,
+        image_name    = local.os_image_name,
+        product_key   = var.vm_guest_product_key,
         timezone      = var.vm_guest_timezone,
         input_locale  = local.vm_guest_input_locales,
         system_locale = var.vm_guest_system_locale,
         ui_language   = var.vm_guest_ui_language,
-        user_locale   = var.vm_guest_user_locale,
+        user_locale   = var.vm_guest_user_locale
       }
     ),
   }
+
+  // Boot and Shutdown Settings
+  boot_command     = ["<spacebar>"]
+  shutdown_command = var.shutdown_command
+
+  // Communicator Settings and Credentials
+  communicator   = "winrm"
+  winrm_use_ssl  = true
+  winrm_insecure = true
+  winrm_use_ntlm = true
+  winrm_username = var.admin_username
+  winrm_password = var.admin_password
 }
 
 // Defines the builders to run, provisioners, and post-processors.
-
 build {
   sources = [
     "source.hyperv-iso.windows",
@@ -136,7 +164,7 @@ build {
 
   provisioner "file" {
     content = templatefile(
-      "${path.root}/answer_files/server/unattend.pkrtpl.hcl",
+      "${path.root}/answer_files/unattend.pkrtpl.hcl",
       {
         timezone      = var.vm_guest_timezone,
         input_locale  = local.vm_guest_input_locales,
@@ -148,19 +176,11 @@ build {
     destination = "C:\\Windows\\System32\\Sysprep\\unattend.xml"
   }
 
-  provisioner "powershell" {
-    inline = [
-        "& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit /unattend:\"C:\\Windows\\System32\\Sysprep\\unattend.xml\"",
-        "while ($true) { $ImageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select-Object ImageState; if ($ImageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $ImageState.ImageState; Start-Sleep -Seconds 10 } else { break } }",
-        "Stop-Computer -Force"
-    ]
-  }
-
   post-processors {
     post-processor "vagrant" {
       keep_input_artifact  = false
       compression_level    = 9
-      output               = "../output/${var.vm_name}_{{ .Provider }}.box"
+      output               = "../builds/${local.vm_name}_{{ .Provider }}.box"
       vagrantfile_template = "${path.root}/Vagrantfile"
     }
   }

@@ -4,9 +4,19 @@ variable "headless" {
   default     = true
 }
 
+// Removable Media Settings
+variable "iso_url" {
+  description = "A URL to the ISO containing the installation image."
+  type        = string
+  default     = null
+}
+
 variable "iso_urls" {
-  description = "Multiple URLs for the ISO to download."
-  type        = list(string)
+  description = <<-EOF
+  Multiple URLs for the ISO to download.
+  `iso_urls` is ignored if `iso_url` is set.
+  EOF
+  type = set(string)
   default = [
     "../../_images/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso",
     "https://software-static.download.prss.microsoft.com/pr/download/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso"
@@ -16,15 +26,19 @@ variable "iso_urls" {
 variable "iso_checksum" {
   description = "The checksum for the ISO file or virtual hard drive file."
   type        = string
-  default     = "./windows.sum"
+  default     = null
 }
 
-variable "vm_name" {
-  description = "The name of the new virtual machine, without the file extension."
-  type        = string
-  default     = "windows-2019-core"
+variable "iso_checksum_file" {
+  description = <<-EOF
+  A file that contains checksum for the ISO file or virtual hard drive file.
+  `iso_checksum_file` is ignored if `iso_checksum` is set.
+  EOF
+  type    = string
+  default = "./windows.sum"
 }
 
+// Virtual Machine Settings
 variable "cpus" {
   description = "The number of cpus to use for building the VM."
   type        = string
@@ -43,6 +57,7 @@ variable "disk_size" {
   default     = "51200"
 }
 
+// Guest OS Settings.
 variable "admin_username" {
   description = "The administrator username that will be create and use to connect to WinRM."
   type        = string
@@ -51,9 +66,32 @@ variable "admin_username" {
 
 variable "admin_password" {
   description = "The administrator's password."
-  description = "The password to use to connect to WinRM."
   type        = string
   default     = "vagrant"
+}
+
+variable "vm_guest_product_key" {
+  description = "The product key used to install and to activate Windows."
+  type        = string
+  default     = ""
+}
+
+variable "vm_guest_os_name" {
+  type        = string
+  description = "The guest operating system name. Used for naming."
+  default     = "server"
+}
+
+variable "vm_guest_os_version" {
+  description = "The guest operating system version. Used for naming."
+  type        = string
+  default     = "2019"
+}
+
+variable "vm_guest_os_edition" {
+  description = "The guest operating system edition. Used for naming."
+  type        = string
+  default     = "standardcore"
 }
 
 variable "vm_guest_timezone" {
@@ -64,7 +102,7 @@ variable "vm_guest_timezone" {
 
 variable "vm_guest_input_locales" {
   description = "The system input locale and the keyboard layout."
-  type        = list(string)
+  type        = set(string)
   default = [
     "0409:00000409",
     "0419:00000419"
@@ -89,6 +127,7 @@ variable "vm_guest_user_locale" {
   default     = "ru-RU"
 }
 
+// Provisioning.
 variable "scripts" {
   description = "Provisioning scripts."
   type        = list(string)
@@ -96,4 +135,13 @@ variable "scripts" {
       "../../_common/windows/Install-Chocolatey.ps1",
       "./scripts/Install-GuestTools.ps1"
     ]
+}
+
+variable "shutdown_command" {
+  description = <<-EOF
+  The command to use to gracefully shutdown the machine once all provisioning is complete. 
+  By default this command run sysprep utility and shutdown the machine.
+  EOF
+  type    = string
+  default = "E:\\PackerShutdown.bat"
 }

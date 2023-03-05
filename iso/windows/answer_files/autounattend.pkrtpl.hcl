@@ -49,8 +49,8 @@
                 <OSImage>
                     <InstallFrom>
                         <MetaData wcm:action="add">
-                            <Key>/IMAGE/INDEX</Key>
-                            <Value>5</Value>
+                            <Key>/IMAGE/NAME</Key>
+                            <Value>${image_name}</Value>
                         </MetaData>
                     </InstallFrom>
                     <InstallTo>
@@ -61,10 +61,19 @@
             </ImageInstall>
             <UserData>
                 <AcceptEula>true</AcceptEula>
+                %{ if product_key != "" }
+                <ProductKey>
+                    <Key>${product_key}</Key>
+                    <WillShowUI>OnError</WillShowUI>
+                </ProductKey>
+                %{ endif }
             </UserData>
         </component>
     </settings>
     <settings pass="specialize">
+        <component name="Microsoft-Windows-ServerManager-SvrMgrNc" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <DoNotOpenServerManagerAtLogon>true</DoNotOpenServerManagerAtLogon>
+        </component>
         <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <RunSynchronous>
                 <RunSynchronousCommand wcm:action="add">
@@ -75,26 +84,55 @@
             </RunSynchronous>
         </component>
         <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <TimeZone>Russian Standard Time</TimeZone>
+            <TimeZone>${timezone}</TimeZone>
         </component>
     </settings>
     <settings pass="oobeSystem">
+        <component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <InputLocale>${input_locale}</InputLocale>
+            <SystemLocale>${system_locale}</SystemLocale>
+            <UILanguage>${ui_language}</UILanguage>
+            <UserLocale>${user_locale}</UserLocale>
+        </component>
         <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <UserAccounts>
+                %{ if username == "Administrator" }
                 <AdministratorPassword>
-                    <Value>Passw0rd</Value>
+                    <Value>${password}</Value>
                     <PlainText>true</PlainText>
                 </AdministratorPassword>
+                %{ else }
+                <LocalAccounts>
+                    <LocalAccount wcm:action="add">
+                        <Password>
+                            <Value>${password}</Value>
+                            <PlainText>true</PlainText>
+                        </Password>
+                        <Group>Administrators</Group>
+                        <DisplayName>${username}</DisplayName>
+                        <Name>${username}</Name>
+                    </LocalAccount>
+                </LocalAccounts>
+                %{ endif }
             </UserAccounts>
             <AutoLogon>
                 <Password>
-                    <Value>Passw0rd</Value>
+                    <Value>${password}</Value>
                     <PlainText>true</PlainText>
                 </Password>
                 <Enabled>true</Enabled>
+                <Username>${username}</Username>
                 <LogonCount>1</LogonCount>
-                <Username>Administrator</Username>
             </AutoLogon>
+            <OOBE>
+                <HideEULAPage>true</HideEULAPage>
+                <HideLocalAccountScreen>true</HideLocalAccountScreen>
+                <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+                <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+                <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+                <NetworkLocation>Work</NetworkLocation>
+                <ProtectYourPC>1</ProtectYourPC>
+            </OOBE>
             <FirstLogonCommands>
                 <SynchronousCommand wcm:action="add">
                     <Order>1</Order>
@@ -103,25 +141,10 @@
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <Order>2</Order>
-                    <CommandLine>%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File A:\Enable-WinRM.ps1</CommandLine>
+                    <CommandLine>%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File E:\Enable-WinRM.ps1</CommandLine>
                     <Description>Enable WinRM service</Description>
                 </SynchronousCommand>
             </FirstLogonCommands>
-            <OOBE>
-                <HideEULAPage>true</HideEULAPage>
-                <HideLocalAccountScreen>true</HideLocalAccountScreen>
-                <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
-                <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
-                <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
-                <ProtectYourPC>1</ProtectYourPC>
-            </OOBE>
-        </component>
-        <component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <InputLocale>0409:00000409;0419:00000419</InputLocale>
-            <SystemLocale>ru-RU</SystemLocale>
-            <UserLocale>ru-RU</UserLocale>
-            <UILanguage>en-US</UILanguage>
         </component>
     </settings>
-    <cpi:offlineImage cpi:source="wim:c:/wsim/windows_10/install.wim#Windows 10 Pro for Workstations" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
 </unattend>

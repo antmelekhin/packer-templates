@@ -1,0 +1,1 @@
+﻿Powershell.exe -ExecutionPolicy Bypass -File "E:\Start-Sysprep.ps1"

@@ -82,6 +82,9 @@ source "hyperv-iso" "windows" {
   winrm_use_ntlm = true
   winrm_username = var.admin_username
   winrm_password = var.admin_password
+
+  // Output Settings
+  output_directory = "../../builds/VMs/hyperv"
 }
 
 source "virtualbox-iso" "windows" {
@@ -135,6 +138,9 @@ source "virtualbox-iso" "windows" {
   winrm_use_ntlm = true
   winrm_username = var.admin_username
   winrm_password = var.admin_password
+
+  // Output Settings
+  output_directory = "../../builds/VMs/virtualbox"
 }
 
 // Defines the builders to run, provisioners, and post-processors.
@@ -190,7 +196,7 @@ build {
     post-processor "vagrant" {
       keep_input_artifact  = false
       compression_level    = 9
-      output               = "../builds/${local.vm_name}_{{ .Provider }}.box"
+      output               = "../../builds/boxes/${local.vm_name}_{{ .Provider }}.box"
       vagrantfile_template = "${path.root}/Vagrantfile"
     }
   }

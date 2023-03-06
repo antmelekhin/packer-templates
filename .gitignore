@@ -1,7 +1,8 @@
 .DS_Store
 _images/*.iso
-output-*/
-*.box
-packer_cache/
+builds/**/*.ovf
+builds/**/*.vmdk
+builds/**/*.vdi
+builds/boxes/*.box
 *.log
 README.md

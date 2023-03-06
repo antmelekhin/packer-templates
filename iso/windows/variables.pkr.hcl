@@ -94,6 +94,12 @@ variable "vm_guest_os_edition" {
   default     = "standardcore"
 }
 
+variable "vm_guest_os_image_index" {
+  description = "Uses the index number to select the image to install."
+  type        = number
+  default     = null
+}
+
 variable "vm_guest_timezone" {
   description = "The computer's time zone."
   type        = string
@@ -132,9 +138,9 @@ variable "scripts" {
   description = "Provisioning scripts."
   type        = list(string)
   default = [
-      "../../_common/windows/Install-Chocolatey.ps1",
-      "./scripts/Install-GuestTools.ps1"
-    ]
+    "../../_common/windows/Install-Chocolatey.ps1",
+    "./scripts/Install-GuestTools.ps1"
+  ]
 }
 
 variable "shutdown_command" {

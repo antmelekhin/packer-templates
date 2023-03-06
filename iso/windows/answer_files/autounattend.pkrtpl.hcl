@@ -49,8 +49,8 @@
                 <OSImage>
                     <InstallFrom>
                         <MetaData wcm:action="add">
-                            <Key>/IMAGE/NAME</Key>
-                            <Value>${image_name}</Value>
+                            <Key>${image_key}</Key>
+                            <Value>${image_value}</Value>
                         </MetaData>
                     </InstallFrom>
                     <InstallTo>

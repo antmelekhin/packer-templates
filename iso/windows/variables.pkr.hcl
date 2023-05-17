@@ -77,8 +77,8 @@ variable "vm_guest_product_key" {
 }
 
 variable "vm_guest_os_name" {
-  type        = string
   description = "The guest operating system name. Used for naming."
+  type        = string
   default     = "server"
 }
 

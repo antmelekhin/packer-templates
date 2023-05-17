@@ -169,13 +169,11 @@ build {
   provisioner "windows-restart" {}
 
   provisioner "file" {
-    source      = "./scripts/setup_complete/"
+    sources = [
+      "./scripts/setup_complete/",
+      "../../_common/windows/Enable-WinRM.ps1"
+    ]
     destination = "C:\\Windows\\Setup\\Scripts\\"
-  }
-
-  provisioner "file" {
-    source      = "../../_common/windows/Enable-WinRM.ps1"
-    destination = "C:\\Windows\\Setup\\Scripts\\Enable-WinRM.ps1"
   }
 
   provisioner "file" {
@@ -194,10 +192,9 @@ build {
 
   post-processors {
     post-processor "vagrant" {
-      keep_input_artifact  = false
-      compression_level    = 9
-      output               = "../../builds/boxes/${local.vm_name}_{{ .Provider }}.box"
-      vagrantfile_template = "${path.root}/Vagrantfile"
+      keep_input_artifact = false
+      compression_level   = 9
+      output              = "../../builds/boxes/${local.vm_name}_{{ .Provider }}.box"
     }
   }
 }

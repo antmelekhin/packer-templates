@@ -4,5 +4,6 @@ builds/**/*.ovf
 builds/**/*.vmdk
 builds/**/*.vdi
 builds/boxes/*.box
+packer_cache/
 *.log
 README.md

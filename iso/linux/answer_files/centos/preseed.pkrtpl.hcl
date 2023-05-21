@@ -48,8 +48,8 @@ epel-release
 %end
 
 # Post-installation Script.
-%post --erroronfail 
-yum update -y 
+%post --erroronfail
+yum update -y
 
 echo "Defaults:${username} !requiretty" > /etc/sudoers.d/${username}
 echo "${username} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/${username}

@@ -69,6 +69,7 @@ source "hyperv-iso" "linux" {
   communicator = "ssh"
   ssh_username = var.admin_username
   ssh_password = var.admin_password
+  ssh_timeout  = "30m"
 
   // Output Settings
   output_directory = "../../builds/VMs/virtualbox"
@@ -79,7 +80,7 @@ source "virtualbox-iso" "linux" {
 
   // Virtual Machine Settings
   vm_name              = local.vm_name
-  guest_os_type        = "Debian_64"
+  guest_os_type        = var.guest_os_type
   cpus                 = var.cpus
   memory               = var.memory
   hard_drive_interface = "sata"
@@ -94,20 +95,15 @@ source "virtualbox-iso" "linux" {
   http_content = local.http_content
 
   // Boot and Shutdown Settings
-  boot_wait = "5s"
-  boot_command = [
-    "<esc><wait>",
-    "auto ",
-    "net.ifnames=0 ",
-    "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-    "<enter>"
-  ]
+  boot_wait        = "5s"
+  boot_command     = var.boot_command
   shutdown_command = var.shutdown_command
 
   // Communicator Settings and Credentials
   communicator = "ssh"
   ssh_username = var.admin_username
   ssh_password = var.admin_password
+  ssh_timeout  = "30m"
 
   // Output Settings
   output_directory = "../../builds/VMs/virtualbox"
@@ -125,8 +121,6 @@ build {
       "../../_common/linux/cleanup.sh"
     ]
   }
-
-  // provisioner "breakpoint" {}
 
   post-processors {
     post-processor "vagrant" {

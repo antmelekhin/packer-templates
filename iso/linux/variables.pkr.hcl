@@ -39,6 +39,12 @@ variable "iso_checksum_file" {
 }
 
 // Virtual Machine Settings
+variable "guest_os_type" {
+  description = "The guest OS type being installed."
+  type        = string
+  default     = "Debian_64"
+}
+
 variable "cpus" {
   description = "The number of cpus to use for building the VM."
   type        = string
@@ -89,7 +95,7 @@ variable "vm_guest_distr_edition" {
 }
 
 variable "vm_guest_repository_mirror" {
-  description = "A mirror URL."
+  description = "A repository mirror URL. Not used in RHEL builds."
   type        = string
   default     = "mirror.yandex.ru"
 }
@@ -98,6 +104,19 @@ variable "vm_guest_timezone" {
   description = "The computer's time zone."
   type        = string
   default     = "Europe/Moscow"
+}
+
+// Boot and Shutdown Settings
+variable "boot_command" {
+  description = "This is an array of commands to type when the virtual machine is first booted."
+  type        = list(string)
+  default = [
+    "<esc><wait>",
+    "auto ",
+    "net.ifnames=0 ",
+    "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+    "<enter>"
+  ]
 }
 
 variable "shutdown_command" {

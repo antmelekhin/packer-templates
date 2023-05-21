@@ -55,14 +55,8 @@ source "hyperv-iso" "linux" {
   http_content = local.http_content
 
   // Boot and Shutdown Settings
-  boot_wait = "5s"
-  boot_command = [
-    "<esc><wait>",
-    "auto ",
-    "net.ifnames=0 ",
-    "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-    "<enter>"
-  ]
+  boot_wait        = "5s"
+  boot_command     = var.boot_command
   shutdown_command = var.shutdown_command
 
   // Communicator Settings and Credentials

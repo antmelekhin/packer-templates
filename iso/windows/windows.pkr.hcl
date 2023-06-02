@@ -31,6 +31,25 @@ locals {
 
   // Defines other local variables
   vm_guest_input_locales = join(";", var.vm_guest_input_locales)
+
+  // Defines the local variables for cd content
+  cd_content = {
+    "autounattend.xml" = templatefile(
+      "${path.root}/answer_files/autounattend.pkrtpl.hcl",
+      {
+        username      = var.admin_username,
+        password      = var.admin_password,
+        image_key     = local.os_image_key,
+        image_value   = local.os_image_value,
+        product_key   = var.vm_guest_product_key,
+        timezone      = var.vm_guest_timezone,
+        input_locale  = local.vm_guest_input_locales,
+        system_locale = var.vm_guest_system_locale,
+        ui_language   = var.vm_guest_ui_language,
+        user_locale   = var.vm_guest_user_locale
+      }
+    )
+  }
 }
 
 // Defines the builder configuration blocks
@@ -48,28 +67,12 @@ source "hyperv-iso" "windows" {
   // Removable Media Settings
   iso_urls     = local.iso_urls
   iso_checksum = local.iso_checksum
+  cd_content   = local.cd_content
   cd_files = [
     "../../_common/windows/Enable-WinRM.ps1",
     "../../_common/windows/Start-Sysprep.ps1",
     "./scripts/PackerShutdown.bat"
   ]
-  cd_content = {
-    "autounattend.xml" = templatefile(
-      "${path.root}/answer_files/autounattend.pkrtpl.hcl",
-      {
-        username      = var.admin_username,
-        password      = var.admin_password,
-        image_key     = local.os_image_key,
-        image_value   = local.os_image_value,
-        product_key   = var.vm_guest_product_key,
-        timezone      = var.vm_guest_timezone,
-        input_locale  = local.vm_guest_input_locales,
-        system_locale = var.vm_guest_system_locale,
-        ui_language   = var.vm_guest_ui_language,
-        user_locale   = var.vm_guest_user_locale
-      }
-    ),
-  }
 
   // Boot and Shutdown Settings
   boot_command     = ["<spacebar>"]
@@ -104,28 +107,12 @@ source "virtualbox-iso" "windows" {
   // Removable Media Settings
   iso_urls     = local.iso_urls
   iso_checksum = local.iso_checksum
+  cd_content   = local.cd_content
   cd_files = [
     "../../_common/windows/Enable-WinRM.ps1",
     "../../_common/windows/Start-Sysprep.ps1",
     "./scripts/PackerShutdown.bat"
   ]
-  cd_content = {
-    "autounattend.xml" = templatefile(
-      "${path.root}/answer_files/autounattend.pkrtpl.hcl",
-      {
-        username      = var.admin_username,
-        password      = var.admin_password,
-        image_key     = local.os_image_key,
-        image_value   = local.os_image_value,
-        product_key   = var.vm_guest_product_key,
-        timezone      = var.vm_guest_timezone,
-        input_locale  = local.vm_guest_input_locales,
-        system_locale = var.vm_guest_system_locale,
-        ui_language   = var.vm_guest_ui_language,
-        user_locale   = var.vm_guest_user_locale
-      }
-    ),
-  }
 
   // Boot and Shutdown Settings
   boot_command     = ["<spacebar>"]

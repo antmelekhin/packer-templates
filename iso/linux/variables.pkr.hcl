@@ -41,20 +41,20 @@ variable "iso_checksum_file" {
 // Virtual Machine Settings
 variable "cpus" {
   description = "The number of cpus to use for building the VM."
-  type        = string
-  default     = "1"
+  type        = number
+  default     = 1
 }
 
 variable "memory" {
   description = "The amount of memory to use for building the VM in megabytes."
-  type        = string
-  default     = "1024"
+  type        = number
+  default     = 1024
 }
 
 variable "disk_size" {
   description = "The size, in megabytes, of the hard disk to create for the VM."
-  type        = string
-  default     = "10000"
+  type        = number
+  default     = 12400
 }
 
 variable "firmware" {

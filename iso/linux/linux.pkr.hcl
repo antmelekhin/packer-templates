@@ -19,6 +19,14 @@ locals {
   iso_urls     = var.iso_url == null ? var.iso_urls : [var.iso_url]
   iso_checksum = var.iso_checksum == null ? "file:${var.iso_checksum_file}" : var.iso_checksum
 
+  // Defines the local variables for VM and box naming
+  build_date = formatdate("YYYYMMDDhhmm", timestamp())
+  vm_name    = "${var.vm_guest_distr_name}-${var.vm_guest_distr_version}-${var.vm_guest_distr_edition}_${var.firmware}_${local.build_date}"
+
+  // Defines the firmware local variables
+  generation   = var.firmware == "efi" ? 2 : 1
+  boot_command = var.firmware == "efi" ? var.boot_command_efi : var.boot_command_bios
+
   // Defines the local variables for http content
   http_content = {
     "/preseed.cfg" = templatefile(
@@ -31,10 +39,6 @@ locals {
       }
     )
   }
-
-  // Defines the local variables for VM and box naming
-  build_date = formatdate("YYYYMMDDhhmm", timestamp())
-  vm_name    = "${var.vm_guest_distr_name}-${var.vm_guest_distr_version}-${var.vm_guest_distr_edition}_${local.build_date}"
 }
 
 // Defines the builder configuration blocks
@@ -42,12 +46,15 @@ source "hyperv-iso" "linux" {
   headless = var.headless
 
   // Virtual Machine Settings
-  vm_name     = local.vm_name
-  cpus        = var.cpus
-  memory      = var.memory
-  disk_size   = var.disk_size
-  switch_name = "Default Switch"
-  generation  = 1
+  vm_name   = local.vm_name
+  cpus      = var.cpus
+  memory    = var.memory
+  disk_size = var.disk_size
+
+  // Hyper V specific settings
+  switch_name           = var.switch_name
+  generation            = local.generation
+  enable_dynamic_memory = var.enable_dynamic_memory
 
   // Removable Media Settings
   iso_urls     = local.iso_urls
@@ -56,7 +63,7 @@ source "hyperv-iso" "linux" {
 
   // Boot and Shutdown Settings
   boot_wait        = "5s"
-  boot_command     = var.boot_command
+  boot_command     = local.boot_command
   shutdown_command = var.shutdown_command
 
   // Communicator Settings and Credentials
@@ -79,7 +86,7 @@ source "virtualbox-iso" "linux" {
   memory               = var.memory
   hard_drive_interface = "sata"
   disk_size            = var.disk_size
-  firmware             = "bios"
+  firmware             = var.firmware
   guest_additions_mode = "upload"
   guest_additions_path = "/tmp/VBoxGuestAdditions.iso"
 
@@ -90,7 +97,7 @@ source "virtualbox-iso" "linux" {
 
   // Boot and Shutdown Settings
   boot_wait        = "5s"
-  boot_command     = var.boot_command
+  boot_command     = local.boot_command
   shutdown_command = var.shutdown_command
 
   // Communicator Settings and Credentials

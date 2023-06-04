@@ -12,9 +12,18 @@ iso_urls = [
 ]
 
 // Boot and Shutdown Settings
-boot_command = [
+boot_command_bios = [
   "<esc>",
   "<wait>",
   "linux inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg biosdevname=0 net.ifnames=0",
   "<enter>"
+]
+
+boot_command_efi = [
+  "<wait>c<wait>",
+  "setparams kickstart<enter>",
+  "linuxefi /images/pxeboot/vmlinuz ",
+  "inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}//preseed.cfg<enter>",
+  "initrdefi /images/pxeboot/initrd.img<enter>",
+  "boot<enter>"
 ]

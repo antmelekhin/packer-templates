@@ -39,12 +39,6 @@ variable "iso_checksum_file" {
 }
 
 // Virtual Machine Settings
-variable "guest_os_type" {
-  description = "The guest OS type being installed."
-  type        = string
-  default     = "Debian_64"
-}
-
 variable "cpus" {
   description = "The number of cpus to use for building the VM."
   type        = string
@@ -61,6 +55,32 @@ variable "disk_size" {
   description = "The size, in megabytes, of the hard disk to create for the VM."
   type        = string
   default     = "10000"
+}
+
+variable "firmware" {
+  description = "The firmware to be used: BIOS or EFI."
+  type        = string
+  default     = "efi"
+}
+
+// VirtualBox specific settings
+variable "guest_os_type" {
+  description = "The guest OS type being installed."
+  type        = string
+  default     = "Debian_64"
+}
+
+// Hyper V specific settings
+variable "switch_name" {
+  description = "The name of the switch to connect the virtual machine to."
+  type        = string
+  default     = "Default Switch"
+}
+
+variable "enable_dynamic_memory" {
+  description = "If true enable dynamic memory for the virtual machine."
+  type        = bool
+  default     = true
 }
 
 // Guest OS Settings
@@ -107,8 +127,8 @@ variable "vm_guest_timezone" {
 }
 
 // Boot and Shutdown Settings
-variable "boot_command" {
-  description = "This is an array of commands to type when the virtual machine is first booted."
+variable "boot_command_bios" {
+  description = "This is an array of commands to type when the virtual machine is first booted (BIOS)."
   type        = list(string)
   default = [
     "<esc><wait>",
@@ -116,6 +136,21 @@ variable "boot_command" {
     "net.ifnames=0 ",
     "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
     "<enter>"
+  ]
+}
+
+variable "boot_command_efi" {
+  description = "This is an array of commands to type when the virtual machine is first booted (EFI)."
+  type        = list(string)
+  default = [
+    "<wait>c<wait>",
+    "linux /install.amd/vmlinuz ",
+    "auto-install/enable=true ",
+    "debconf/priority=critical ",
+    "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+    "vga=788 noprompt quiet --<enter>",
+    "initrd /install.amd/initrd.gz<enter>",
+    "boot<enter>"
   ]
 }
 

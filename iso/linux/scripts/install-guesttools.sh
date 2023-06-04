@@ -10,14 +10,14 @@ elif [ -f /etc/redhat-release ]; then
     VERSION=$(cat /etc/redhat-release | cut -d" " -f4 | cut -d "." -f1)
 fi
 
-# Install the packages required for building kernel modules.
-if [ $DISTR == "debian" ]; then
-    sudo apt-get install -y build-essential bzip2 dkms linux-headers-$(uname -r)
-elif [ $DISTR == "centos" ]; then
-    sudo yum install -y bzip2 dkms kernel-devel kernel-headers
-fi
-
 if [ $PACKER_BUILDER_TYPE == 'virtualbox-iso' ]; then
+    # Install the packages required for building kernel modules.
+    if [ $DISTR == "debian" ]; then
+        sudo apt-get install -y build-essential bzip2 dkms linux-headers-$(uname -r)
+    elif [ $DISTR == "centos" ]; then
+        sudo yum install -y bzip2 dkms kernel-devel kernel-headers
+    fi
+
     # Install the Guest Additions.
     if [ -f /tmp/VBoxGuestAdditions.iso ]; then
         sudo mkdir -p /tmp/virtualbox
@@ -26,7 +26,12 @@ if [ $PACKER_BUILDER_TYPE == 'virtualbox-iso' ]; then
         sudo umount /tmp/virtualbox
         sudo rm -rf /tmp/VBoxGuestAdditions.iso
     fi
+fi
 
-elif [ $PACKER_BUILDER_TYPE == 'hyperv-iso' ]; then
-    sudo apt-get install -y hyperv-daemons
+if [ $PACKER_BUILDER_TYPE == 'hyperv-iso' ]; then
+    if [ $DISTR == "debian" ]; then
+        sudo apt-get install -y hyperv-daemons
+    elif [ $DISTR == "centos" ]; then
+        sudo yum install -y hyperv-daemons
+    fi
 fi

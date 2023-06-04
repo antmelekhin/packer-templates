@@ -60,7 +60,7 @@ locals {
 source "hyperv-iso" "windows" {
   headless = var.headless
 
-  // Virtual Machine Settings
+  // Virtual Machine settings
   vm_name   = local.vm_name
   cpus      = var.cpus
   memory    = var.memory
@@ -71,7 +71,7 @@ source "hyperv-iso" "windows" {
   generation            = local.generation
   enable_dynamic_memory = var.enable_dynamic_memory
 
-  // Removable Media Settings
+  // Removable media settings
   iso_urls     = local.iso_urls
   iso_checksum = local.iso_checksum
   cd_content   = local.cd_content
@@ -81,12 +81,12 @@ source "hyperv-iso" "windows" {
     "./scripts/PackerShutdown.bat"
   ]
 
-  // Boot and Shutdown Settings
+  // Boot and Shutdown settings
   boot_wait        = "0s"
   boot_command     = ["a<wait>a<wait>a<wait>a<wait>a<wait>a<wait>a"]
   shutdown_command = var.shutdown_command
 
-  // Communicator Settings and Credentials
+  // Communicator settings and credentials
   communicator   = "winrm"
   winrm_use_ssl  = true
   winrm_insecure = true
@@ -94,7 +94,7 @@ source "hyperv-iso" "windows" {
   winrm_username = var.admin_username
   winrm_password = var.admin_password
 
-  // Output Settings
+  // Output settings
   output_directory = "../../builds/VMs/hyperv"
 }
 
@@ -102,17 +102,21 @@ source "virtualbox-iso" "windows" {
   headless = var.headless
 
   // Virtual Machine Settings
-  vm_name              = local.vm_name
+  vm_name   = local.vm_name
+  cpus      = var.cpus
+  memory    = var.memory
+  disk_size = var.disk_size
+
+  // VirtualBox specific settings
   guest_os_type        = var.guest_os_type
-  cpus                 = var.cpus
-  memory               = var.memory
-  hard_drive_interface = "sata"
-  disk_size            = var.disk_size
   firmware             = var.firmware
+  hard_drive_interface = var.hard_drive_interface
+
+  // Guest additions settings
   guest_additions_mode = "upload"
   guest_additions_path = "C:/Windows/Temp/GuestTools.iso"
 
-  // Removable Media Settings
+  // Removable media settings
   iso_urls     = local.iso_urls
   iso_checksum = local.iso_checksum
   cd_content   = local.cd_content
@@ -122,12 +126,12 @@ source "virtualbox-iso" "windows" {
     "./scripts/PackerShutdown.bat"
   ]
 
-  // Boot and Shutdown Settings
+  // Boot and Shutdown settings
   boot_wait        = "0s"
   boot_command     = ["<spacebar>"]
   shutdown_command = var.shutdown_command
 
-  // Communicator Settings and Credentials
+  // Communicator settings and credentials
   communicator   = "winrm"
   winrm_use_ssl  = true
   winrm_insecure = true
@@ -135,7 +139,7 @@ source "virtualbox-iso" "windows" {
   winrm_username = var.admin_username
   winrm_password = var.admin_password
 
-  // Output Settings
+  // Output settings
   output_directory = "../../builds/VMs/virtualbox"
 }
 

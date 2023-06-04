@@ -4,7 +4,7 @@ variable "headless" {
   default     = true
 }
 
-// Removable Media Settings
+// Removable media settings
 variable "iso_url" {
   description = "A URL to the ISO containing the installation image."
   type        = string
@@ -38,7 +38,7 @@ variable "iso_checksum_file" {
   default     = "./windows.sum"
 }
 
-// Virtual Machine Settings
+// Virtual Machine settings
 variable "cpus" {
   description = "The number of cpus to use for building the VM."
   type        = number
@@ -63,13 +63,6 @@ variable "firmware" {
   default     = "efi"
 }
 
-// VirtualBox specific settings
-variable "guest_os_type" {
-  description = "The guest OS type being installed."
-  type        = string
-  default     = "Windows10_64"
-}
-
 // Hyper V specific settings
 variable "switch_name" {
   description = "The name of the switch to connect the virtual machine to."
@@ -83,7 +76,20 @@ variable "enable_dynamic_memory" {
   default     = true
 }
 
-// Guest OS Settings
+// VirtualBox specific settings
+variable "guest_os_type" {
+  description = "The guest OS type being installed."
+  type        = string
+  default     = "Windows10_64"
+}
+
+variable "hard_drive_interface" {
+  description = "The type of controller that the primary hard drive is attached to."
+  type        = string
+  default     = "sata"
+}
+
+// Guest OS settings
 variable "admin_username" {
   description = "The administrator username that will be create and use to connect to WinRM."
   type        = string
@@ -169,7 +175,7 @@ variable "scripts" {
   ]
 }
 
-// Boot and Shutdown Settings
+// Boot and Shutdown settings
 variable "shutdown_command" {
   description = <<-EOF
   The command to use to gracefully shutdown the machine once all provisioning is complete. 

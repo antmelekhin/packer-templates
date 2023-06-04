@@ -45,7 +45,7 @@ locals {
 source "hyperv-iso" "linux" {
   headless = var.headless
 
-  // Virtual Machine Settings
+  // Virtual Machine settings
   vm_name   = local.vm_name
   cpus      = var.cpus
   memory    = var.memory
@@ -56,57 +56,61 @@ source "hyperv-iso" "linux" {
   generation            = local.generation
   enable_dynamic_memory = var.enable_dynamic_memory
 
-  // Removable Media Settings
+  // Removable media settings
   iso_urls     = local.iso_urls
   iso_checksum = local.iso_checksum
   http_content = local.http_content
 
-  // Boot and Shutdown Settings
+  // Boot and Shutdown settings
   boot_wait        = "5s"
   boot_command     = local.boot_command
   shutdown_command = var.shutdown_command
 
-  // Communicator Settings and Credentials
+  // Communicator settings and credentials
   communicator = "ssh"
   ssh_username = var.admin_username
   ssh_password = var.admin_password
   ssh_timeout  = "30m"
 
-  // Output Settings
+  // Output settings
   output_directory = "../../builds/VMs/virtualbox"
 }
 
 source "virtualbox-iso" "linux" {
   headless = var.headless
 
-  // Virtual Machine Settings
-  vm_name              = local.vm_name
+  // Virtual Machine settings
+  vm_name   = local.vm_name
+  cpus      = var.cpus
+  memory    = var.memory
+  disk_size = var.disk_size
+
+  // VirtualBox specific settings
   guest_os_type        = var.guest_os_type
-  cpus                 = var.cpus
-  memory               = var.memory
-  hard_drive_interface = "sata"
-  disk_size            = var.disk_size
   firmware             = var.firmware
+  hard_drive_interface = var.hard_drive_interface
+
+  // Guest additions settings
   guest_additions_mode = "upload"
   guest_additions_path = "/tmp/VBoxGuestAdditions.iso"
 
-  // Removable Media Settings
+  // Removable media settings
   iso_urls     = local.iso_urls
   iso_checksum = local.iso_checksum
   http_content = local.http_content
 
-  // Boot and Shutdown Settings
+  // Boot and Shutdown settings
   boot_wait        = "5s"
   boot_command     = local.boot_command
   shutdown_command = var.shutdown_command
 
-  // Communicator Settings and Credentials
+  // Communicator settings and credentials
   communicator = "ssh"
   ssh_username = var.admin_username
   ssh_password = var.admin_password
   ssh_timeout  = "30m"
 
-  // Output Settings
+  // Output settings
   output_directory = "../../builds/VMs/virtualbox"
 }
 

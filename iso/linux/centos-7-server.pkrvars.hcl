@@ -1,17 +1,17 @@
-// Guest OS Metadata
+// Guest OS settings
 vm_guest_distr_name    = "centos"
 vm_guest_distr_version = "7"
 
-// Virtual Machine Settings
+// VirtualBox specific settings
 guest_os_type = "RedHat_64"
 
-// Removable Media Settings
+// Removable media settings
 iso_urls = [
   "../../_images/CentOS-7-x86_64-NetInstall-2009.iso",
   "http://mirror.yandex.ru/centos/7.9.2009/isos/x86_64/CentOS-7-x86_64-NetInstall-2009.iso"
 ]
 
-// Boot and Shutdown Settings
+// Boot and Shutdown settings
 boot_command_bios = [
   "<esc>",
   "<wait>",

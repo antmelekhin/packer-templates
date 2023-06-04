@@ -19,7 +19,7 @@
                     <CreatePartitions>
                         <CreatePartition wcm:action="add">
                             <Order>1</Order>
-                            <Size>450</Size>
+                            <Size>350</Size>
                             <Type>Primary</Type>
                         </CreatePartition>
                         <CreatePartition wcm:action="add">
@@ -59,7 +59,7 @@
                         <ModifyPartition wcm:action="add">
                             <Order>4</Order>
                             <Format>NTFS</Format>
-                            <Label>System</Label>
+                            <Label>Windows</Label>
                             <Letter>C</Letter>
                             <PartitionID>4</PartitionID>
                         </ModifyPartition>
@@ -88,7 +88,7 @@
                         <ModifyPartition wcm:action="add">
                             <Order>2</Order>
                             <Format>NTFS</Format>
-                            <Label>System</Label>
+                            <Label>Windows</Label>
                             <Letter>C</Letter>
                             <PartitionID>2</PartitionID>
                         </ModifyPartition>

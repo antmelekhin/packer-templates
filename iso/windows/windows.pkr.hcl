@@ -21,7 +21,10 @@ locals {
 
   // Defines the local variables for VM and box naming
   build_date = formatdate("YYYYMMDDhhmm", timestamp())
-  vm_name    = "windows-${var.vm_guest_os_version}-${var.vm_guest_os_edition}_${local.build_date}"
+  vm_name    = "windows-${var.vm_guest_os_version}-${var.vm_guest_os_edition}_${var.firmware}_${local.build_date}"
+
+  // Defines the firmware local variables
+  generation = var.firmware == "efi" ? 2 : 1
 
   // Defines the image selection local variables
   os_name        = var.vm_guest_os_name == "server" ? "Windows Server" : "Windows"
@@ -37,6 +40,7 @@ locals {
     "autounattend.xml" = templatefile(
       "${path.root}/answer_files/autounattend.pkrtpl.hcl",
       {
+        firmware      = var.firmware,
         username      = var.admin_username,
         password      = var.admin_password,
         image_key     = local.os_image_key,
@@ -57,12 +61,15 @@ source "hyperv-iso" "windows" {
   headless = var.headless
 
   // Virtual Machine Settings
-  vm_name     = local.vm_name
-  cpus        = var.cpus
-  memory      = var.memory
-  disk_size   = var.disk_size
-  switch_name = "Default Switch"
-  generation  = 1
+  vm_name   = local.vm_name
+  cpus      = var.cpus
+  memory    = var.memory
+  disk_size = var.disk_size
+
+  // Hyper V specific settings
+  switch_name           = var.switch_name
+  generation            = local.generation
+  enable_dynamic_memory = var.enable_dynamic_memory
 
   // Removable Media Settings
   iso_urls     = local.iso_urls
@@ -75,7 +82,8 @@ source "hyperv-iso" "windows" {
   ]
 
   // Boot and Shutdown Settings
-  boot_command     = ["<spacebar>"]
+  boot_wait        = "0s"
+  boot_command     = ["a<wait>a<wait>a<wait>a<wait>a<wait>a<wait>a"]
   shutdown_command = var.shutdown_command
 
   // Communicator Settings and Credentials
@@ -95,12 +103,12 @@ source "virtualbox-iso" "windows" {
 
   // Virtual Machine Settings
   vm_name              = local.vm_name
-  guest_os_type        = "Windows10_64"
+  guest_os_type        = var.guest_os_type
   cpus                 = var.cpus
   memory               = var.memory
   hard_drive_interface = "sata"
   disk_size            = var.disk_size
-  firmware             = "bios"
+  firmware             = var.firmware
   guest_additions_mode = "upload"
   guest_additions_path = "C:/Windows/Temp/GuestTools.iso"
 
@@ -115,6 +123,7 @@ source "virtualbox-iso" "windows" {
   ]
 
   // Boot and Shutdown Settings
+  boot_wait        = "0s"
   boot_command     = ["<spacebar>"]
   shutdown_command = var.shutdown_command
 

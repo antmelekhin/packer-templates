@@ -57,6 +57,32 @@ variable "disk_size" {
   default     = "51200"
 }
 
+variable "firmware" {
+  description = "The firmware to be used: BIOS or EFI."
+  type        = string
+  default     = "efi"
+}
+
+// VirtualBox specific settings
+variable "guest_os_type" {
+  description = "The guest OS type being installed."
+  type        = string
+  default     = "Windows10_64"
+}
+
+// Hyper V specific settings
+variable "switch_name" {
+  description = "The name of the switch to connect the virtual machine to."
+  type        = string
+  default     = "Default Switch"
+}
+
+variable "enable_dynamic_memory" {
+  description = "If true enable dynamic memory for the virtual machine."
+  type        = bool
+  default     = true
+}
+
 // Guest OS Settings
 variable "admin_username" {
   description = "The administrator username that will be create and use to connect to WinRM."
@@ -143,6 +169,7 @@ variable "scripts" {
   ]
 }
 
+// Boot and Shutdown Settings
 variable "shutdown_command" {
   description = <<-EOF
   The command to use to gracefully shutdown the machine once all provisioning is complete. 

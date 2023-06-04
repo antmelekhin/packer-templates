@@ -15,6 +15,56 @@
                 <Disk wcm:action="add">
                     <DiskID>0</DiskID>
                     <WillWipeDisk>true</WillWipeDisk>
+                    %{~ if firmware == "efi" ~}
+                    <CreatePartitions>
+                        <CreatePartition wcm:action="add">
+                            <Order>1</Order>
+                            <Size>450</Size>
+                            <Type>Primary</Type>
+                        </CreatePartition>
+                        <CreatePartition wcm:action="add">
+                            <Order>2</Order>
+                            <Size>100</Size>
+                            <Type>EFI</Type>
+                        </CreatePartition>
+                        <CreatePartition wcm:action="add">
+                            <Order>3</Order>
+                            <Size>16</Size>
+                            <Type>MSR</Type>
+                        </CreatePartition>
+                        <CreatePartition wcm:action="add">
+                            <Order>4</Order>
+                            <Extend>true</Extend>
+                            <Type>Primary</Type>
+                        </CreatePartition>
+                    </CreatePartitions>
+                    <ModifyPartitions>
+                        <ModifyPartition wcm:action="add">
+                            <Order>1</Order>
+                            <Format>NTFS</Format>
+                            <Label>WinRE</Label>
+                            <TypeID>DE94BBA4-06D1-4D40-A16A-BFD50179D6AC</TypeID>
+                            <PartitionID>1</PartitionID>
+                        </ModifyPartition>
+                        <ModifyPartition wcm:action="add">
+                            <Order>2</Order>
+                            <Format>FAT32</Format>
+                            <Label>System</Label>
+                            <PartitionID>2</PartitionID>
+                        </ModifyPartition>
+                        <ModifyPartition wcm:action="add">
+                            <Order>3</Order>
+                            <PartitionID>3</PartitionID>
+                        </ModifyPartition>
+                        <ModifyPartition wcm:action="add">
+                            <Order>4</Order>
+                            <Format>NTFS</Format>
+                            <Label>System</Label>
+                            <Letter>C</Letter>
+                            <PartitionID>4</PartitionID>
+                        </ModifyPartition>
+                    </ModifyPartitions>
+                    %{~ else ~}
                     <CreatePartitions>
                         <CreatePartition wcm:action="add">
                             <Order>1</Order>
@@ -43,6 +93,7 @@
                             <PartitionID>2</PartitionID>
                         </ModifyPartition>
                     </ModifyPartitions>
+                    %{~ endif ~}
                 </Disk>
             </DiskConfiguration>
             <ImageInstall>
@@ -55,7 +106,7 @@
                     </InstallFrom>
                     <InstallTo>
                         <DiskID>0</DiskID>
-                        <PartitionID>2</PartitionID>
+                        <PartitionID>%{ if firmware == "efi" }4%{ else }2%{ endif }</PartitionID>
                     </InstallTo>
                 </OSImage>
             </ImageInstall>

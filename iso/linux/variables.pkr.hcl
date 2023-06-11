@@ -83,6 +83,12 @@ variable "guest_os_type" {
   default     = "Debian_64"
 }
 
+variable "iso_interface" {
+  description = "The type of controller that the ISO is attached to."
+  type        = string
+  default     = "sata"
+}
+
 variable "hard_drive_interface" {
   description = "The type of controller that the primary hard drive is attached to."
   type        = string
@@ -133,6 +139,12 @@ variable "vm_guest_timezone" {
 }
 
 // Boot and Shutdown settings
+variable "boot_wait" {
+  description = "The time to wait after booting the initial virtual machine before typing the `boot_command`."
+  type        = string
+  default     = "5s"
+}
+
 variable "boot_command_bios" {
   description = "This is an array of commands to type when the virtual machine is first booted (BIOS)."
   type        = list(string)
@@ -162,7 +174,7 @@ variable "boot_command_efi" {
 
 variable "shutdown_command" {
   description = <<-EOF
-  The command to use to gracefully shutdown the machine once all provisioning is complete. 
+  The command to use to gracefully shutdown the machine once all provisioning is complete.
   By default this command run sysprep utility and shutdown the machine.
   EOF
   type        = string

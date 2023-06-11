@@ -80,7 +80,13 @@ variable "enable_dynamic_memory" {
 variable "guest_os_type" {
   description = "The guest OS type being installed."
   type        = string
-  default     = "Windows10_64"
+  default     = "Windows2019_64"
+}
+
+variable "iso_interface" {
+  description = "The type of controller that the ISO is attached to."
+  type        = string
+  default     = "sata"
 }
 
 variable "hard_drive_interface" {
@@ -176,6 +182,18 @@ variable "scripts" {
 }
 
 // Boot and Shutdown settings
+variable "boot_wait" {
+  description = "The time to wait after booting the initial virtual machine before typing the `boot_command`."
+  type        = string
+  default     = "5s"
+}
+
+variable "boot_command" {
+  description = "This is an array of commands to type when the virtual machine is first booted."
+  type        = list(string)
+  default     = ["<spacebar>"]
+}
+
 variable "shutdown_command" {
   description = <<-EOF
   The command to use to gracefully shutdown the machine once all provisioning is complete. 

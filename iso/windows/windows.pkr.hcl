@@ -82,8 +82,8 @@ source "hyperv-iso" "windows" {
   ]
 
   // Boot and Shutdown settings
-  boot_wait        = "0s"
-  boot_command     = ["a<wait>a<wait>a<wait>a<wait>a<wait>a<wait>a"]
+  boot_wait        = var.boot_wait
+  boot_command     = var.boot_command
   shutdown_command = var.shutdown_command
 
   // Communicator settings and credentials
@@ -110,6 +110,7 @@ source "virtualbox-iso" "windows" {
   // VirtualBox specific settings
   guest_os_type        = var.guest_os_type
   firmware             = var.firmware
+  iso_interface        = var.iso_interface
   hard_drive_interface = var.hard_drive_interface
 
   // Guest additions settings
@@ -127,8 +128,8 @@ source "virtualbox-iso" "windows" {
   ]
 
   // Boot and Shutdown settings
-  boot_wait        = "0s"
-  boot_command     = ["<spacebar>"]
+  boot_wait        = var.boot_wait
+  boot_command     = var.boot_command
   shutdown_command = var.shutdown_command
 
   // Communicator settings and credentials

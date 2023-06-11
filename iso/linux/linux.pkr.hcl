@@ -62,7 +62,7 @@ source "hyperv-iso" "linux" {
   http_content = local.http_content
 
   // Boot and Shutdown settings
-  boot_wait        = "5s"
+  boot_wait        = var.boot_wait
   boot_command     = local.boot_command
   shutdown_command = var.shutdown_command
 
@@ -88,6 +88,7 @@ source "virtualbox-iso" "linux" {
   // VirtualBox specific settings
   guest_os_type        = var.guest_os_type
   firmware             = var.firmware
+  iso_interface        = var.iso_interface
   hard_drive_interface = var.hard_drive_interface
 
   // Guest additions settings

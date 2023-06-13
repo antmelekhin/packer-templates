@@ -54,6 +54,12 @@ locals {
       }
     )
   }
+
+  cd_files = [
+    "../../_common/windows/Enable-WinRM.ps1",
+    "../../_common/windows/Start-Sysprep.ps1",
+    "./scripts/PackerShutdown.bat"
+  ]
 }
 
 // Defines the builder configuration blocks
@@ -75,11 +81,7 @@ source "hyperv-iso" "windows" {
   iso_urls     = local.iso_urls
   iso_checksum = local.iso_checksum
   cd_content   = local.cd_content
-  cd_files = [
-    "../../_common/windows/Enable-WinRM.ps1",
-    "../../_common/windows/Start-Sysprep.ps1",
-    "./scripts/PackerShutdown.bat"
-  ]
+  cd_files     = local.cd_files
 
   // Boot and Shutdown settings
   boot_wait        = var.boot_wait
@@ -121,11 +123,7 @@ source "virtualbox-iso" "windows" {
   iso_urls     = local.iso_urls
   iso_checksum = local.iso_checksum
   cd_content   = local.cd_content
-  cd_files = [
-    "../../_common/windows/Enable-WinRM.ps1",
-    "../../_common/windows/Start-Sysprep.ps1",
-    "./scripts/PackerShutdown.bat"
-  ]
+  cd_files     = local.cd_files
 
   // Boot and Shutdown settings
   boot_wait        = var.boot_wait

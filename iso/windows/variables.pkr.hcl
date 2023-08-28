@@ -171,16 +171,6 @@ variable "vm_guest_user_locale" {
   default     = "ru-RU"
 }
 
-// Provisioning
-variable "scripts" {
-  description = "Provisioning scripts."
-  type        = list(string)
-  default = [
-    "../../_common/windows/Install-Chocolatey.ps1",
-    "./scripts/Install-GuestTools.ps1"
-  ]
-}
-
 // Boot and Shutdown settings
 variable "boot_wait" {
   description = "The time to wait after booting the initial virtual machine before typing the `boot_command`."

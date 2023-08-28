@@ -152,10 +152,11 @@ build {
   provisioner "powershell" {
     elevated_password = var.admin_password
     elevated_user     = var.admin_username
-    scripts           = var.scripts
+    script            = "./scripts/Install-GuestTools.ps1"
   }
 
   provisioner "windows-restart" {
+    except          = ["hyperv-iso.windows"]
     restart_timeout = "15m"
   }
 

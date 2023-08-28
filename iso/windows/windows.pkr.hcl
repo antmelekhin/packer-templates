@@ -154,19 +154,18 @@ build {
   ]
 
   provisioner "powershell" {
-    elevated_password = var.admin_password
     elevated_user     = var.admin_username
+    elevated_password = var.admin_password
     script            = "./scripts/Install-GuestTools.ps1"
   }
 
   provisioner "windows-restart" {
-    except          = ["hyperv-iso.windows"]
-    restart_timeout = "15m"
+    except = ["hyperv-iso.windows"]
   }
 
   provisioner "powershell" {
-    elevated_password = var.admin_password
     elevated_user     = var.admin_username
+    elevated_password = var.admin_password
     script            = "../../_common/windows/Start-Cleanup.ps1"
   }
 

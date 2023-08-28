@@ -6,6 +6,10 @@ packer {
       version = ">= v1.0.4"
       source  = "github.com/hashicorp/hyperv"
     }
+    vagrant = {
+      source  = "github.com/hashicorp/vagrant"
+      version = ">= v1.0.3"
+    }
     virtualbox = {
       version = ">= v1.0.4"
       source  = "github.com/hashicorp/virtualbox"

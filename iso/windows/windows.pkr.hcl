@@ -61,6 +61,7 @@ locals {
 
   cd_files = [
     "../../_common/windows/Enable-WinRM.ps1",
+    "../../_common/windows/Prepare-WindowsHost.ps1",
     "../../_common/windows/Start-Sysprep.ps1",
     "./scripts/PackerShutdown.bat"
   ]

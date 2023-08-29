@@ -192,9 +192,21 @@
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <Order>2</Order>
+                    <CommandLine>%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File E:\Prepare-WindowsHost.ps1</CommandLine>
+                    <Description>Prepare Host</Description>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>3</Order>
                     <CommandLine>%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File E:\Enable-WinRM.ps1</CommandLine>
                     <Description>Enable WinRM service</Description>
                 </SynchronousCommand>
+                %{~ if username != "Administrator" ~}
+                <SynchronousCommand wcm:action="add">
+                    <Order>4</Order>
+                    <CommandLine>%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe -Command Set-LocalUser -Name ${username} -PasswordNeverExpires $true</CommandLine>
+                    <Description>Disable password expiration for local user</Description>
+                </SynchronousCommand>
+                %{~ endif ~}
             </FirstLogonCommands>
         </component>
     </settings>

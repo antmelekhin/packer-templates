@@ -37,11 +37,7 @@ if ($TokenValue -ne 1) {
     $null = New-ItemProperty -Path $TokenPath -Name $TokenPropName -Value 1 -PropertyType DWORD
 }
 
-# Create WinRM Firewall Rules.
-# WinRM over SSL Rule.
-Get-NetFirewallRule -Name 'WINRM-HTTPS-In-TCP' | Remove-NetFirewallRule
-Get-NetFirewallRule -DisplayName 'Windows Remote Management (HTTPS-In)' | Remove-NetFirewallRule
-
+# Create WinRM over SSL Firewall Rule.
 New-NetFirewallRule `
     -Group 'Windows Remote Management' `
     -DisplayName 'Windows Remote Management (HTTPS-In)' `
@@ -51,6 +47,3 @@ New-NetFirewallRule `
     -Protocol TCP `
     -Program System `
     -Enabled True
-
-# WinRM Rule.
-Get-NetFirewallRule -DisplayGroup 'Windows Remote Management' | Set-NetFirewallRule -Enabled True

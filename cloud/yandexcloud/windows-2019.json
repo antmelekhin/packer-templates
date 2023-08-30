@@ -1,7 +1,7 @@
 {
   "variables": {
     "source_image_family": "windows-2019-dc-gvlk",
-    "image_family": "windows-2019-dc",
+    "image_family": "windows-2019-datacenter",
     "instance_cores": "4",
     "instance_mem_gb": "8",
     "disk_size_gb": "50",

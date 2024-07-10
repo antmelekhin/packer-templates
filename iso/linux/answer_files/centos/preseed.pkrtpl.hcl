@@ -1,11 +1,11 @@
 # Install from an installation tree on a remote server in text mode.
 install
 text
-url --mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=os
+url --url=http://vault.centos.org/centos/$releasever/os/$basearch/
 
 # Configures additional yum repositories that can be used as sources for package installation.
-repo --name=updates --mirrorlist=http://mirrorlist.centos.org/?release=$releasever&arch=$basearch&repo=updates&infra=$infra
-repo --name=epel --mirrorlist=http://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch
+repo --name=updates --baseurl=http://vault.centos.org/centos/$releasever/updates/$basearch/
+repo --name=epel --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch
 
 # Localization settings.
 lang ru_RU.UTF-8

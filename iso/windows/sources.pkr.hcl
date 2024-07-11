@@ -92,11 +92,11 @@ source "hyperv-iso" "windows" {
 
   // Communicator settings and credentials
   communicator   = "winrm"
-  winrm_use_ssl  = true
   winrm_insecure = true
-  winrm_use_ntlm = true
-  winrm_username = var.admin_username
   winrm_password = var.admin_password
+  winrm_use_ntlm = true
+  winrm_use_ssl  = true
+  winrm_username = var.admin_username
 
   // Output settings
   output_directory = "../../builds/VMs/hyperv"
@@ -135,11 +135,11 @@ source "virtualbox-iso" "windows" {
 
   // Communicator settings and credentials
   communicator   = "winrm"
-  winrm_use_ssl  = true
   winrm_insecure = true
-  winrm_use_ntlm = true
-  winrm_username = var.admin_username
   winrm_password = var.admin_password
+  winrm_use_ntlm = true
+  winrm_use_ssl  = true
+  winrm_username = var.admin_username
 
   // Output settings
   output_directory = "../../builds/VMs/virtualbox"

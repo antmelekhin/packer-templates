@@ -6,12 +6,11 @@ vm_guest_distr_version = "12"
 vbox_guest_os_type = "Debian_64"
 
 // Removable media settings
+iso_checksum_file = "https://cdimage.debian.org/cdimage/archive/12.5.0/amd64/iso-cd/SHA256SUMS"
 iso_urls = [
   "../../_images/debian-12.5.0-amd64-netinst.iso",
   "https://cdimage.debian.org/cdimage/archive/12.5.0/amd64/iso-cd/debian-12.5.0-amd64-netinst.iso"
 ]
-
-iso_checksum_file = "https://cdimage.debian.org/cdimage/archive/12.5.0/amd64/iso-cd/SHA256SUMS"
 
 // Boot and Shutdown settings
 boot_command_bios = [

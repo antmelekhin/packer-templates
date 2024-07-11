@@ -71,9 +71,9 @@ source "hyperv-iso" "linux" {
 
   // Communicator settings and credentials
   communicator = "ssh"
-  ssh_username = var.admin_username
   ssh_password = var.admin_password
   ssh_timeout  = "30m"
+  ssh_username = var.admin_username
 
   // Output settings
   output_directory = "../../builds/VMs/virtualbox"
@@ -111,9 +111,9 @@ source "virtualbox-iso" "linux" {
 
   // Communicator settings and credentials
   communicator = "ssh"
-  ssh_username = var.admin_username
   ssh_password = var.admin_password
   ssh_timeout  = "30m"
+  ssh_username = var.admin_username
 
   // Output settings
   output_directory = "../../builds/VMs/virtualbox"

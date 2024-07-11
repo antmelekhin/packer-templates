@@ -5,24 +5,6 @@ variable "headless" {
 }
 
 // Removable media settings
-variable "iso_url" {
-  description = "A URL to the ISO containing the installation image."
-  type        = string
-  default     = null
-}
-
-variable "iso_urls" {
-  description = <<-EOF
-  Multiple URLs for the ISO to download.
-  `iso_urls` is ignored if `iso_url` is set.
-  EOF
-  type        = set(string)
-  default = [
-    "../../_images/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso",
-    "https://software-static.download.prss.microsoft.com/pr/download/17763.737.190906-2324.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us_1.iso"
-  ]
-}
-
 variable "iso_checksum" {
   description = "The checksum for the ISO file or virtual hard drive file."
   type        = string
@@ -35,7 +17,22 @@ variable "iso_checksum_file" {
   `iso_checksum_file` is ignored if `iso_checksum` is set.
   EOF
   type        = string
-  default     = "./windows.sum"
+  default     = null
+}
+
+variable "iso_url" {
+  description = "A URL to the ISO containing the installation image."
+  type        = string
+  default     = null
+}
+
+variable "iso_urls" {
+  description = <<-EOF
+  Multiple URLs for the ISO to download.
+  `iso_urls` is ignored if `iso_url` is set.
+  EOF
+  type        = set(string)
+  default     = null
 }
 
 // Virtual Machine settings
@@ -45,16 +42,16 @@ variable "cpus" {
   default     = 2
 }
 
-variable "memory" {
-  description = "The amount of memory to use for building the VM in megabytes."
-  type        = string
-  default     = 4096
-}
-
 variable "disk_size" {
   description = "The size, in megabytes, of the hard disk to create for the VM."
   type        = string
   default     = 51200
+}
+
+variable "memory" {
+  description = "The amount of memory to use for building the VM in megabytes."
+  type        = string
+  default     = 4096
 }
 
 variable "firmware" {
@@ -64,35 +61,43 @@ variable "firmware" {
 }
 
 // Hyper V specific settings
-variable "switch_name" {
-  description = "The name of the switch to connect the virtual machine to."
-  type        = string
-  default     = "Default Switch"
-}
-
-variable "enable_dynamic_memory" {
+variable "hyperv_enable_dynamic_memory" {
   description = "If true enable dynamic memory for the virtual machine."
   type        = bool
   default     = true
 }
 
-// VirtualBox specific settings
-variable "guest_os_type" {
-  description = "The guest OS type being installed."
+variable "hyperv_switch_name" {
+  description = "The name of the switch to connect the virtual machine to."
   type        = string
-  default     = "Windows2019_64"
+  default     = "Default Switch"
 }
 
-variable "iso_interface" {
+// VirtualBox specific settings
+variable "vbox_guest_os_type" {
+  description = "The guest OS type being installed."
+  type        = string
+  default     = null
+}
+
+variable "vbox_hard_drive_interface" {
+  description = "The type of controller that the primary hard drive is attached to."
+  type        = string
+  default     = "sata"
+}
+
+variable "vbox_iso_interface" {
   description = "The type of controller that the ISO is attached to."
   type        = string
   default     = "sata"
 }
 
-variable "hard_drive_interface" {
-  description = "The type of controller that the primary hard drive is attached to."
-  type        = string
-  default     = "sata"
+variable "vboxmanage" {
+  description = "Custom VBoxManage commands to execute in order to further customize the virtual machine being created."
+  type        = list(list(string))
+  default = [
+    ["modifyvm", "{{ .Name }}", "--nat-localhostreachable1", "on"],
+  ]
 }
 
 // Guest OS settings
@@ -117,19 +122,19 @@ variable "vm_guest_product_key" {
 variable "vm_guest_os_name" {
   description = "The guest operating system name. Used for naming."
   type        = string
-  default     = "server"
+  default     = null
 }
 
 variable "vm_guest_os_version" {
   description = "The guest operating system version. Used for naming."
   type        = string
-  default     = "2019"
+  default     = null
 }
 
 variable "vm_guest_os_edition" {
   description = "The guest operating system edition. Used for naming."
   type        = string
-  default     = "standardcore"
+  default     = null
 }
 
 variable "vm_guest_os_image_index" {
@@ -172,16 +177,16 @@ variable "vm_guest_user_locale" {
 }
 
 // Boot and Shutdown settings
-variable "boot_wait" {
-  description = "The time to wait after booting the initial virtual machine before typing the `boot_command`."
-  type        = string
-  default     = "5s"
-}
-
 variable "boot_command" {
   description = "This is an array of commands to type when the virtual machine is first booted."
   type        = list(string)
   default     = ["<spacebar>"]
+}
+
+variable "boot_wait" {
+  description = "The time to wait after booting the initial virtual machine before typing the `boot_command`."
+  type        = string
+  default     = "5s"
 }
 
 variable "shutdown_command" {

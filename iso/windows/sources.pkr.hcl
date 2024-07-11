@@ -20,15 +20,12 @@ packer {
 // Defines the local variables
 locals {
   // Defines the local variables for iso selection
-  iso_urls     = var.iso_url == null ? var.iso_urls : [var.iso_url]
   iso_checksum = var.iso_checksum == null ? "file:${var.iso_checksum_file}" : var.iso_checksum
+  iso_urls     = var.iso_url == null ? var.iso_urls : [var.iso_url]
 
   // Defines the local variables for VM and box naming
   build_date = formatdate("YYYYMMDDhhmm", timestamp())
   vm_name    = "windows-${var.vm_guest_os_version}-${var.vm_guest_os_edition}_${var.firmware}_${local.build_date}"
-
-  // Defines the firmware local variables
-  generation = var.firmware == "efi" ? 2 : 1
 
   // Defines the image selection local variables
   os_name        = var.vm_guest_os_name == "server" ? "Windows Server" : "Windows"
@@ -70,27 +67,27 @@ locals {
 // Defines the builder configuration blocks
 source "hyperv-iso" "windows" {
   headless = var.headless
+  vm_name  = local.vm_name
 
   // Virtual Machine settings
-  vm_name   = local.vm_name
   cpus      = var.cpus
-  memory    = var.memory
   disk_size = var.disk_size
+  memory    = var.memory
 
   // Hyper V specific settings
-  switch_name           = var.switch_name
-  generation            = local.generation
-  enable_dynamic_memory = var.enable_dynamic_memory
+  enable_dynamic_memory = var.hyperv_enable_dynamic_memory
+  generation            = var.firmware == "efi" ? 2 : 1
+  switch_name           = var.hyperv_switch_name
 
   // Removable media settings
-  iso_urls     = local.iso_urls
-  iso_checksum = local.iso_checksum
   cd_content   = local.cd_content
   cd_files     = local.cd_files
+  iso_checksum = local.iso_checksum
+  iso_urls     = local.iso_urls
 
   // Boot and Shutdown settings
-  boot_wait        = var.boot_wait
   boot_command     = var.boot_command
+  boot_wait        = var.boot_wait
   shutdown_command = var.shutdown_command
 
   // Communicator settings and credentials
@@ -107,32 +104,33 @@ source "hyperv-iso" "windows" {
 
 source "virtualbox-iso" "windows" {
   headless = var.headless
+  vm_name  = local.vm_name
 
   // Virtual Machine Settings
-  vm_name   = local.vm_name
   cpus      = var.cpus
-  memory    = var.memory
   disk_size = var.disk_size
+  memory    = var.memory
 
   // VirtualBox specific settings
-  guest_os_type        = var.guest_os_type
   firmware             = var.firmware
-  iso_interface        = var.iso_interface
-  hard_drive_interface = var.hard_drive_interface
+  guest_os_type        = var.vbox_guest_os_type
+  hard_drive_interface = var.vbox_hard_drive_interface
+  iso_interface        = var.vbox_iso_interface
+  vboxmanage           = var.vboxmanage
 
   // Guest additions settings
   guest_additions_mode = "upload"
   guest_additions_path = "C:/Windows/Temp/GuestTools.iso"
 
   // Removable media settings
-  iso_urls     = local.iso_urls
-  iso_checksum = local.iso_checksum
   cd_content   = local.cd_content
   cd_files     = local.cd_files
+  iso_checksum = local.iso_checksum
+  iso_urls     = local.iso_urls
 
   // Boot and Shutdown settings
-  boot_wait        = var.boot_wait
   boot_command     = var.boot_command
+  boot_wait        = var.boot_wait
   shutdown_command = var.shutdown_command
 
   // Communicator settings and credentials

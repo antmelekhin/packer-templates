@@ -44,13 +44,13 @@ variable "cpus" {
 
 variable "disk_size" {
   description = "The size, in megabytes, of the hard disk to create for the VM."
-  type        = string
+  type        = number
   default     = 51200
 }
 
 variable "memory" {
   description = "The amount of memory to use for building the VM in megabytes."
-  type        = string
+  type        = number
   default     = 4096
 }
 
@@ -191,7 +191,7 @@ variable "boot_wait" {
 
 variable "shutdown_command" {
   description = <<-EOF
-  The command to use to gracefully shutdown the machine once all provisioning is complete. 
+  The command to use to gracefully shutdown the machine once all provisioning is complete.
   By default this command run sysprep utility and shutdown the machine.
   EOF
   type        = string

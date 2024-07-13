@@ -149,6 +149,7 @@ variable "boot_command_efi" {
   type        = list(string)
   default     = null
 }
+
 variable "boot_wait" {
   description = "The time to wait after booting the initial virtual machine before typing the `boot_command`."
   type        = string

@@ -31,7 +31,8 @@ locals {
   os_name        = var.vm_guest_os_name == "server" ? "Windows Server" : "Windows"
   os_edition     = var.vm_guest_os_name == "server" ? "SERVER${upper(var.vm_guest_os_edition)}" : title(var.vm_guest_os_edition)
   os_image_key   = var.vm_guest_os_image_index == null ? "/IMAGE/NAME" : "/IMAGE/INDEX"
-  os_image_value = local.os_image_key == "/IMAGE/INDEX" ? var.vm_guest_os_image_index : "${local.os_name} ${var.vm_guest_os_version} ${local.os_edition}"
+  os_image_name  = "${local.os_name} ${var.vm_guest_os_version} ${local.os_edition}"
+  os_image_value = local.os_image_key == "/IMAGE/INDEX" ? var.vm_guest_os_image_index : local.os_image_name
 
   // Defines other local variables
   vm_guest_input_locales = join(";", var.vm_guest_input_locales)

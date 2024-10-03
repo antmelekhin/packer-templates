@@ -48,16 +48,16 @@ variable "disk_size" {
   default     = 51200
 }
 
-variable "memory" {
-  description = "The amount of memory to use for building the VM in megabytes."
-  type        = number
-  default     = 4096
-}
-
 variable "firmware" {
   description = "The firmware to be used: BIOS or EFI."
   type        = string
   default     = "efi"
+}
+
+variable "memory" {
+  description = "The amount of memory to use for building the VM in megabytes."
+  type        = number
+  default     = 4096
 }
 
 // Hyper V specific settings

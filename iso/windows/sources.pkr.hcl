@@ -110,10 +110,10 @@ source "virtualbox-iso" "windows" {
   // Virtual Machine Settings
   cpus      = var.cpus
   disk_size = var.disk_size
+  firmware  = var.firmware
   memory    = var.memory
 
   // VirtualBox specific settings
-  firmware             = var.firmware
   guest_os_type        = var.vbox_guest_os_type
   hard_drive_interface = var.vbox_hard_drive_interface
   iso_interface        = var.vbox_iso_interface

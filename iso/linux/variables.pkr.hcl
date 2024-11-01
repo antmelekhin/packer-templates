@@ -5,24 +5,6 @@ variable "headless" {
 }
 
 // Removable media settings
-variable "iso_url" {
-  description = "A URL to the ISO containing the installation image."
-  type        = string
-  default     = null
-}
-
-variable "iso_urls" {
-  description = <<-EOF
-  Multiple URLs for the ISO to download.
-  `iso_urls` is ignored if `iso_url` is set.
-  EOF
-  type        = set(string)
-  default = [
-    "../../_images/debian-11.7.0-amd64-netinst.iso",
-    "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-11.7.0-amd64-netinst.iso"
-  ]
-}
-
 variable "iso_checksum" {
   description = "The checksum for the ISO file or virtual hard drive file."
   type        = string
@@ -35,7 +17,22 @@ variable "iso_checksum_file" {
   `iso_checksum_file` is ignored if `iso_checksum` is set.
   EOF
   type        = string
-  default     = "./linux.sum"
+  default     = null
+}
+
+variable "iso_url" {
+  description = "A URL to the ISO containing the installation image."
+  type        = string
+  default     = null
+}
+
+variable "iso_urls" {
+  description = <<-EOF
+  Multiple URLs for the ISO to download.
+  `iso_urls` is ignored if `iso_url` is set.
+  EOF
+  type        = set(string)
+  default     = null
 }
 
 // Virtual Machine settings
@@ -43,12 +40,6 @@ variable "cpus" {
   description = "The number of cpus to use for building the VM."
   type        = number
   default     = 1
-}
-
-variable "memory" {
-  description = "The amount of memory to use for building the VM in megabytes."
-  type        = number
-  default     = 1024
 }
 
 variable "disk_size" {
@@ -63,36 +54,50 @@ variable "firmware" {
   default     = "efi"
 }
 
-// Hyper V specific settings
-variable "switch_name" {
-  description = "The name of the switch to connect the virtual machine to."
-  type        = string
-  default     = "Default Switch"
+variable "memory" {
+  description = "The amount of memory to use for building the VM in megabytes."
+  type        = number
+  default     = 1024
 }
 
-variable "enable_dynamic_memory" {
+// Hyper V specific settings
+variable "hyperv_enable_dynamic_memory" {
   description = "If true enable dynamic memory for the virtual machine."
   type        = bool
   default     = true
 }
 
-// VirtualBox specific settings
-variable "guest_os_type" {
-  description = "The guest OS type being installed."
+variable "hyperv_switch_name" {
+  description = "The name of the switch to connect the virtual machine to."
   type        = string
-  default     = "Debian_64"
+  default     = "Default Switch"
 }
 
-variable "iso_interface" {
+// VirtualBox specific settings
+variable "vbox_guest_os_type" {
+  description = "The guest OS type being installed."
+  type        = string
+  default     = null
+}
+
+variable "vbox_hard_drive_interface" {
+  description = "The type of controller that the primary hard drive is attached to."
+  type        = string
+  default     = "sata"
+}
+
+variable "vbox_iso_interface" {
   description = "The type of controller that the ISO is attached to."
   type        = string
   default     = "sata"
 }
 
-variable "hard_drive_interface" {
-  description = "The type of controller that the primary hard drive is attached to."
-  type        = string
-  default     = "sata"
+variable "vboxmanage" {
+  description = "Custom VBoxManage commands to execute in order to further customize the virtual machine being created."
+  type        = list(list(string))
+  default = [
+    ["modifyvm", "{{ .Name }}", "--nat-localhostreachable1", "on"],
+  ]
 }
 
 // Guest OS settings
@@ -109,21 +114,15 @@ variable "admin_password" {
 }
 
 variable "vm_guest_distr_name" {
-  description = "The guest linux distribution name. Used for naming."
+  description = "The guest Linux distribution name. Used for naming."
   type        = string
-  default     = "debian"
+  default     = null
 }
 
 variable "vm_guest_distr_version" {
-  description = "The guest linux distribution version. Used for naming."
+  description = "The guest Linux distribution version. Used for naming."
   type        = string
-  default     = "11"
-}
-
-variable "vm_guest_distr_edition" {
-  description = "The guest linux distribution edition. Used for naming."
-  type        = string
-  default     = "server"
+  default     = null
 }
 
 variable "vm_guest_repository_mirror" {
@@ -139,37 +138,22 @@ variable "vm_guest_timezone" {
 }
 
 // Boot and Shutdown settings
-variable "boot_wait" {
-  description = "The time to wait after booting the initial virtual machine before typing the `boot_command`."
-  type        = string
-  default     = "5s"
-}
-
 variable "boot_command_bios" {
   description = "This is an array of commands to type when the virtual machine is first booted (BIOS)."
   type        = list(string)
-  default = [
-    "<esc><wait>",
-    "auto ",
-    "net.ifnames=0 ",
-    "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-    "<enter>"
-  ]
+  default     = null
 }
 
 variable "boot_command_efi" {
   description = "This is an array of commands to type when the virtual machine is first booted (EFI)."
   type        = list(string)
-  default = [
-    "<wait>c<wait>",
-    "linux /install.amd/vmlinuz ",
-    "auto-install/enable=true ",
-    "debconf/priority=critical ",
-    "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-    "vga=788 noprompt quiet --<enter>",
-    "initrd /install.amd/initrd.gz<enter>",
-    "boot<enter>"
-  ]
+  default     = null
+}
+
+variable "boot_wait" {
+  description = "The time to wait after booting the initial virtual machine before typing the `boot_command`."
+  type        = string
+  default     = "5s"
 }
 
 variable "shutdown_command" {

@@ -25,7 +25,7 @@ locals {
 
   // Defines the local variables for VM and box naming
   build_date = formatdate("YYYYMMDDhhmm", timestamp())
-  vm_name    = "${var.vm_guest_distr_name}-${var.vm_guest_distr_version}_${var.firmware}_${local.build_date}"
+  vm_name    = "debian-${var.vm_guest_os_version}_${var.firmware}_${local.build_date}"
 
   // Defines the firmware local variables
   boot_command = var.firmware == "efi" ? var.boot_command_efi : var.boot_command_bios
@@ -33,10 +33,10 @@ locals {
   // Defines the local variables for http content
   http_content = {
     "/preseed.cfg" = templatefile(
-      "${path.root}/answer_files/${var.vm_guest_distr_name}/preseed.pkrtpl.hcl",
+      "${path.root}/http/preseed.pkrtpl.hcl",
       {
-        username          = var.admin_username,
-        password          = var.admin_password,
+        username          = var.ssh_username,
+        password          = var.ssh_password,
         repository_mirror = var.vm_guest_repository_mirror,
         timezone          = var.vm_guest_timezone
       }
@@ -45,7 +45,7 @@ locals {
 }
 
 // Defines the builder configuration blocks
-source "hyperv-iso" "linux" {
+source "hyperv-iso" "debian" {
   headless = var.headless
   vm_name  = local.vm_name
 
@@ -71,15 +71,15 @@ source "hyperv-iso" "linux" {
 
   // Communicator settings and credentials
   communicator = "ssh"
-  ssh_password = var.admin_password
+  ssh_password = var.ssh_password
   ssh_timeout  = "30m"
-  ssh_username = var.admin_username
+  ssh_username = var.ssh_username
 
   // Output settings
   output_directory = "../../builds/VMs/virtualbox"
 }
 
-source "virtualbox-iso" "linux" {
+source "virtualbox-iso" "debian" {
   headless = var.headless
   vm_name  = local.vm_name
 
@@ -90,7 +90,7 @@ source "virtualbox-iso" "linux" {
   memory    = var.memory
 
   // VirtualBox specific settings
-  guest_os_type        = var.vbox_guest_os_type
+  guest_os_type        = "Debian_64"
   hard_drive_interface = var.vbox_hard_drive_interface
   iso_interface        = var.vbox_iso_interface
   vboxmanage           = var.vboxmanage
@@ -111,9 +111,9 @@ source "virtualbox-iso" "linux" {
 
   // Communicator settings and credentials
   communicator = "ssh"
-  ssh_password = var.admin_password
+  ssh_password = var.ssh_password
   ssh_timeout  = "30m"
-  ssh_username = var.admin_username
+  ssh_username = var.ssh_username
 
   // Output settings
   output_directory = "../../builds/VMs/virtualbox"
@@ -121,13 +121,13 @@ source "virtualbox-iso" "linux" {
 
 build {
   sources = [
-    "source.hyperv-iso.linux",
-    "source.virtualbox-iso.linux"
+    "source.hyperv-iso.debian",
+    "source.virtualbox-iso.debian"
   ]
 
   provisioner "shell" {
     scripts = [
-      "./scripts/install-guesttools.sh",
+      "../../_common/linux/install-guesttools.sh",
       "../../_common/linux/cleanup.sh"
     ]
   }

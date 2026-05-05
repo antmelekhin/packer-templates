@@ -17,7 +17,7 @@ variable "iso_checksum_file" {
   `iso_checksum_file` is ignored if `iso_checksum` is set.
   EOF
   type        = string
-  default     = null
+  default     = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS"
 }
 
 variable "iso_url" {
@@ -32,7 +32,10 @@ variable "iso_urls" {
   `iso_urls` is ignored if `iso_url` is set.
   EOF
   type        = set(string)
-  default     = null
+  default = [
+    "../../_images/debian-13.4.0-amd64-netinst.iso",
+    "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.4.0-amd64-netinst.iso"
+  ]
 }
 
 // Virtual Machine settings
@@ -74,12 +77,6 @@ variable "hyperv_switch_name" {
 }
 
 // VirtualBox specific settings
-variable "vbox_guest_os_type" {
-  description = "The guest OS type being installed."
-  type        = string
-  default     = null
-}
-
 variable "vbox_hard_drive_interface" {
   description = "The type of controller that the primary hard drive is attached to."
   type        = string
@@ -101,32 +98,26 @@ variable "vboxmanage" {
 }
 
 // Guest OS settings
-variable "admin_username" {
-  description = "The administrator username that will be create and use to connect to SSH."
+variable "ssh_username" {
+  description = "The username that will be create and use to connect to SSH."
   type        = string
   default     = "vagrant"
 }
 
-variable "admin_password" {
-  description = "The administrator's password."
+variable "ssh_password" {
+  description = "A plaintext password to use to authenticate with SSH."
   type        = string
   default     = "vagrant"
 }
 
-variable "vm_guest_distr_name" {
-  description = "The guest Linux distribution name. Used for naming."
+variable "vm_guest_os_version" {
+  description = "The guest operating system version. Used for naming."
   type        = string
-  default     = null
-}
-
-variable "vm_guest_distr_version" {
-  description = "The guest Linux distribution version. Used for naming."
-  type        = string
-  default     = null
+  default     = "13"
 }
 
 variable "vm_guest_repository_mirror" {
-  description = "A repository mirror URL. Not used in RHEL builds."
+  description = "A repository mirror URL."
   type        = string
   default     = "mirror.yandex.ru"
 }
@@ -141,13 +132,28 @@ variable "vm_guest_timezone" {
 variable "boot_command_bios" {
   description = "This is an array of commands to type when the virtual machine is first booted (BIOS)."
   type        = list(string)
-  default     = null
+  default = [
+    "<esc><wait>",
+    "auto ",
+    "net.ifnames=0 ",
+    "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+    "<enter>"
+  ]
 }
 
 variable "boot_command_efi" {
   description = "This is an array of commands to type when the virtual machine is first booted (EFI)."
   type        = list(string)
-  default     = null
+  default = [
+    "<wait>c<wait>",
+    "linux /install.amd/vmlinuz ",
+    "auto-install/enable=true ",
+    "debconf/priority=critical ",
+    "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+    "vga=788 noprompt quiet --<enter>",
+    "initrd /install.amd/initrd.gz<enter>",
+    "boot<enter>"
+  ]
 }
 
 variable "boot_wait" {

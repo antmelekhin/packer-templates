@@ -61,7 +61,7 @@ locals {
     "../../_common/windows/Enable-WinRM.ps1",
     "../../_common/windows/Prepare-WindowsHost.ps1",
     "../../_common/windows/Start-Sysprep.ps1",
-    "./scripts/PackerShutdown.bat"
+    "../../_common/windows/PackerShutdown.bat"
   ]
 }
 
@@ -156,7 +156,7 @@ build {
   provisioner "powershell" {
     elevated_user     = var.admin_username
     elevated_password = var.admin_password
-    script            = "./scripts/Install-GuestTools.ps1"
+    script            = "../../_common/windows/Install-GuestTools.ps1"
   }
 
   provisioner "windows-restart" {
@@ -173,7 +173,7 @@ build {
 
   provisioner "file" {
     sources = [
-      "./scripts/setup_complete/",
+      "../../_common/windows/setup_complete/",
       "../../_common/windows/Enable-WinRM.ps1"
     ]
     destination = "C:\\Windows\\Setup\\Scripts\\"

@@ -154,6 +154,7 @@ build {
   ]
 
   provisioner "powershell" {
+    except            = ["hyperv-iso.windows"]
     elevated_user     = var.admin_username
     elevated_password = var.admin_password
     script            = "../../_common/windows/Install-GuestTools.ps1"

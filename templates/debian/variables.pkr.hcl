@@ -116,6 +116,12 @@ variable "ssh_password" {
   default     = "vagrant"
 }
 
+variable "vm_guest_os_name" {
+  description = "The guest operating system name. Used for naming."
+  type        = string
+  default     = "13"
+}
+
 variable "vm_guest_os_version" {
   description = "The guest operating system version. Used for naming."
   type        = string

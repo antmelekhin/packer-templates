@@ -1,5 +1,5 @@
 // Guest OS settings
-vm_guest_distr_name = "debian"
+vm_guest_os_name = "debian"
 vm_guest_os_version = "12"
 
 // VirtualBox specific settings

@@ -1,5 +1,5 @@
 .DS_Store
-_images/*.iso
+images/*.iso
 builds/**/*.ovf
 builds/**/*.vmdk
 builds/**/*.vdi

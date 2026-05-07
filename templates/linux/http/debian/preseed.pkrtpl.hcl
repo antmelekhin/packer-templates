@@ -1,11 +1,11 @@
 # Localization
-d-i debian-installer/locale string ru_RU.UTF-8
+d-i debian-installer/locale string ${locale}
 #d-i debian-installer/language string en
 #d-i debian-installer/country string NL
 #d-i debian-installer/locale string en_GB.UTF-8
 # Optionally specify additional locales to be generated.
 #d-i localechooser/supported-locales multiselect en_US.UTF-8, nl_NL.UTF-8
-d-i keyboard-configuration/xkb-keymap select us
+d-i keyboard-configuration/xkb-keymap select ${keyboard}
 # d-i keyboard-configuration/toggle select No toggling
 
 # Network configuration

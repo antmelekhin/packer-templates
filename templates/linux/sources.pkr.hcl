@@ -35,10 +35,12 @@ locals {
     "/preseed.cfg" = templatefile(
       "${path.root}/http/${var.vm_guest_os_name}/preseed.pkrtpl.hcl",
       {
-        username          = var.ssh_username,
+        keyboard          = var.vm_guest_os_keyboard,
+        locale            = var.vm_guest_os_locale,
         password          = var.ssh_password,
-        repository_mirror = var.vm_guest_repository_mirror,
-        timezone          = var.vm_guest_timezone
+        repository_mirror = var.vm_guest_os_repository_mirror,
+        timezone          = var.vm_guest_os_timezone,
+        username          = var.ssh_username,
       }
     )
   }

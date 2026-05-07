@@ -35,7 +35,7 @@ locals {
   os_image_value = local.os_image_key == "/IMAGE/INDEX" ? var.vm_guest_os_image_index : local.os_image_name
 
   // Defines other local variables
-  vm_guest_input_locales = join(";", var.vm_guest_input_locales)
+  os_input_locales = join(";", var.vm_guest_os_input_locales)
 
   // Defines the local variables for cd content
   cd_content = {
@@ -43,16 +43,16 @@ locals {
       "${path.root}/answer_files/autounattend.pkrtpl.hcl",
       {
         firmware      = var.firmware,
-        username      = var.winrm_username,
-        password      = var.winrm_password,
         image_key     = local.os_image_key,
         image_value   = local.os_image_value,
-        product_key   = var.vm_guest_product_key,
-        timezone      = var.vm_guest_timezone,
-        input_locale  = local.vm_guest_input_locales,
-        system_locale = var.vm_guest_system_locale,
-        ui_language   = var.vm_guest_ui_language,
-        user_locale   = var.vm_guest_user_locale
+        input_locale  = local.os_input_locales,
+        password      = var.winrm_password,
+        product_key   = var.vm_guest_os_product_key,
+        system_locale = var.vm_guest_os_system_locale,
+        timezone      = var.vm_guest_os_timezone,
+        ui_language   = var.vm_guest_os_ui_language,
+        user_locale   = var.vm_guest_os_user_locale,
+        username      = var.winrm_username,
       }
     )
   }
@@ -184,11 +184,11 @@ build {
     content = templatefile(
       "${path.root}/answer_files/unattend.pkrtpl.hcl",
       {
-        timezone      = var.vm_guest_timezone,
-        input_locale  = local.vm_guest_input_locales,
-        system_locale = var.vm_guest_system_locale,
-        ui_language   = var.vm_guest_ui_language,
-        user_locale   = var.vm_guest_user_locale,
+        input_locale  = local.os_input_locales,
+        system_locale = var.vm_guest_os_system_locale,
+        timezone      = var.vm_guest_os_timezone,
+        ui_language   = var.vm_guest_os_ui_language,
+        user_locale   = var.vm_guest_os_user_locale,
       }
     )
     destination = "C:\\Windows\\System32\\Sysprep\\unattend.xml"

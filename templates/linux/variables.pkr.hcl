@@ -101,18 +101,6 @@ variable "vboxmanage" {
 }
 
 // Guest OS settings
-variable "ssh_username" {
-  description = "The username that will be create and use to connect to SSH."
-  type        = string
-  default     = "vagrant"
-}
-
-variable "ssh_password" {
-  description = "A plaintext password to use to authenticate with SSH."
-  type        = string
-  default     = "vagrant"
-}
-
 variable "vm_guest_os_name" {
   description = "The guest operating system name. Used for naming."
   type        = string
@@ -125,14 +113,26 @@ variable "vm_guest_os_version" {
   default     = null
 }
 
-variable "vm_guest_repository_mirror" {
+variable "vm_guest_os_keyboard" {
+  type        = string
+  description = "The guest operating system keyboard input."
+  default     = "us"
+}
+
+variable "vm_guest_os_locale" {
+  description = "The guest operating system locale."
+  type        = string
+  default     = "ru_RU.UTF-8"
+}
+
+variable "vm_guest_os_repository_mirror" {
   description = "A repository mirror URL."
   type        = string
   default     = "mirror.yandex.ru"
 }
 
-variable "vm_guest_timezone" {
-  description = "The computer's time zone."
+variable "vm_guest_os_timezone" {
+  description = "The guest operating system time zone."
   type        = string
   default     = "Europe/Moscow"
 }
@@ -163,4 +163,17 @@ variable "shutdown_command" {
   EOF
   type        = string
   default     = "sudo shutdown -P now"
+}
+
+// Communicator settings and credentials
+variable "ssh_password" {
+  description = "A plaintext password to use to authenticate with SSH."
+  type        = string
+  default     = "vagrant"
+}
+
+variable "ssh_username" {
+  description = "The username that will be create and use to connect to SSH."
+  type        = string
+  default     = "vagrant"
 }

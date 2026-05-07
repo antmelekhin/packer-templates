@@ -101,19 +101,7 @@ variable "vboxmanage" {
 }
 
 // Guest OS settings
-variable "winrm_username" {
-  description = "The administrator username that will be create and use to connect to WinRM."
-  type        = string
-  default     = "vagrant"
-}
-
-variable "winrm_password" {
-  description = "The administrator's password."
-  type        = string
-  default     = "vagrant"
-}
-
-variable "vm_guest_product_key" {
+variable "vm_guest_os_product_key" {
   description = "The product key used to install and to activate Windows."
   type        = string
   default     = ""
@@ -143,13 +131,7 @@ variable "vm_guest_os_image_index" {
   default     = null
 }
 
-variable "vm_guest_timezone" {
-  description = "The computer's time zone."
-  type        = string
-  default     = "Russian Standard Time"
-}
-
-variable "vm_guest_input_locales" {
+variable "vm_guest_os_input_locales" {
   description = "The system input locale and the keyboard layout."
   type        = set(string)
   default = [
@@ -158,19 +140,25 @@ variable "vm_guest_input_locales" {
   ]
 }
 
-variable "vm_guest_system_locale" {
+variable "vm_guest_os_system_locale" {
   description = "The language for non-Unicode programs."
   type        = string
   default     = "ru-RU"
 }
 
-variable "vm_guest_ui_language" {
+variable "vm_guest_os_timezone" {
+  description = "The computer's time zone."
+  type        = string
+  default     = "Russian Standard Time"
+}
+
+variable "vm_guest_os_ui_language" {
   description = "The system default user interface (UI) language."
   type        = string
   default     = "en-US"
 }
 
-variable "vm_guest_user_locale" {
+variable "vm_guest_os_user_locale" {
   description = "The per-user settings used for formatting dates, times, currency, and numbers."
   type        = string
   default     = "ru-RU"
@@ -196,4 +184,17 @@ variable "shutdown_command" {
   EOF
   type        = string
   default     = "E:\\PackerShutdown.bat"
+}
+
+// Communicator settings and credentials
+variable "winrm_password" {
+  description = "The administrator's password."
+  type        = string
+  default     = "vagrant"
+}
+
+variable "winrm_username" {
+  description = "The administrator username that will be create and use to connect to WinRM."
+  type        = string
+  default     = "vagrant"
 }

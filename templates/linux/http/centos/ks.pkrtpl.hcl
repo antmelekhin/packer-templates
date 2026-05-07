@@ -8,8 +8,8 @@ repo --name=updates --baseurl=http://vault.centos.org/centos/$releasever/updates
 repo --name=epel --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch
 
 # Localization settings.
-lang ru_RU.UTF-8
-keyboard us
+lang ${locale}
+keyboard ${keyboard}
 
 # Sets the system time zone to timezone.
 timezone ${timezone}

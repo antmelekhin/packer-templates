@@ -77,6 +77,12 @@ variable "hyperv_switch_name" {
 }
 
 // VirtualBox specific settings
+variable "vbox_guest_os_type" {
+  description = "The guest OS type being installed."
+  type        = string
+  default     = null
+}
+
 variable "vbox_hard_drive_interface" {
   description = "The type of controller that the primary hard drive is attached to."
   type        = string

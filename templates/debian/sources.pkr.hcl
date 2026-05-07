@@ -25,7 +25,7 @@ locals {
 
   // Defines the local variables for VM and box naming
   build_date = formatdate("YYYYMMDDhhmm", timestamp())
-  vm_name    = "debian-${var.vm_guest_os_version}_${var.firmware}_${local.build_date}"
+  vm_name    = "${var.vm_guest_distr_name}-${var.vm_guest_os_version}_${var.firmware}_${local.build_date}"
 
   // Defines the firmware local variables
   boot_command = var.firmware == "efi" ? var.boot_command_efi : var.boot_command_bios
@@ -90,7 +90,7 @@ source "virtualbox-iso" "debian" {
   memory    = var.memory
 
   // VirtualBox specific settings
-  guest_os_type        = "Debian_64"
+  guest_os_type        = var.vbox_guest_os_type
   hard_drive_interface = var.vbox_hard_drive_interface
   iso_interface        = var.vbox_iso_interface
   vboxmanage           = var.vboxmanage

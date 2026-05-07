@@ -59,9 +59,9 @@ locals {
 
   cd_files = [
     "${path.root}/scripts/Enable-WinRM.ps1",
+    "${path.root}/scripts/PackerShutdown.bat",
     "${path.root}/scripts/Prepare-WindowsHost.ps1",
     "${path.root}/scripts/Start-Sysprep.ps1",
-    "${path.root}/scripts/PackerShutdown.bat"
   ]
 }
 

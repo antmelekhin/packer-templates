@@ -116,13 +116,13 @@ variable "ssh_password" {
 variable "vm_guest_os_name" {
   description = "The guest operating system name. Used for naming."
   type        = string
-  default     = "13"
+  default     = null
 }
 
 variable "vm_guest_os_version" {
   description = "The guest operating system version. Used for naming."
   type        = string
-  default     = "13"
+  default     = null
 }
 
 variable "vm_guest_repository_mirror" {

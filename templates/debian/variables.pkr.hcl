@@ -17,7 +17,7 @@ variable "iso_checksum_file" {
   `iso_checksum_file` is ignored if `iso_checksum` is set.
   EOF
   type        = string
-  default     = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS"
+  default     = null
 }
 
 variable "iso_url" {
@@ -32,10 +32,7 @@ variable "iso_urls" {
   `iso_urls` is ignored if `iso_url` is set.
   EOF
   type        = set(string)
-  default = [
-    "../../images/debian-13.4.0-amd64-netinst.iso",
-    "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.4.0-amd64-netinst.iso"
-  ]
+  default     = null
 }
 
 // Virtual Machine settings
@@ -144,28 +141,13 @@ variable "vm_guest_timezone" {
 variable "boot_command_bios" {
   description = "This is an array of commands to type when the virtual machine is first booted (BIOS)."
   type        = list(string)
-  default = [
-    "<esc><wait>",
-    "auto ",
-    "net.ifnames=0 ",
-    "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-    "<enter>"
-  ]
+  default     = null
 }
 
 variable "boot_command_efi" {
   description = "This is an array of commands to type when the virtual machine is first booted (EFI)."
   type        = list(string)
-  default = [
-    "<wait>c<wait>",
-    "linux /install.amd/vmlinuz ",
-    "auto-install/enable=true ",
-    "debconf/priority=critical ",
-    "url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-    "vga=788 noprompt quiet --<enter>",
-    "initrd /install.amd/initrd.gz<enter>",
-    "boot<enter>"
-  ]
+  default     = null
 }
 
 variable "boot_wait" {

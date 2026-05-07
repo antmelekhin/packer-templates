@@ -101,13 +101,13 @@ variable "vboxmanage" {
 }
 
 // Guest OS settings
-variable "admin_username" {
+variable "winrm_username" {
   description = "The administrator username that will be create and use to connect to WinRM."
   type        = string
   default     = "vagrant"
 }
 
-variable "admin_password" {
+variable "winrm_password" {
   description = "The administrator's password."
   type        = string
   default     = "vagrant"

@@ -1,5 +1,5 @@
 // Guest OS settings
-vm_guest_os_name    = "server"
+vm_guest_os_name    = "windows-server"
 vm_guest_os_version = "2019"
 vm_guest_os_edition = "standardcore"
 

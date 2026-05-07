@@ -28,8 +28,8 @@ locals {
   vm_name    = "windows-${var.vm_guest_os_version}-${var.vm_guest_os_edition}_${var.firmware}_${local.build_date}"
 
   // Defines the image selection local variables
-  os_name        = var.vm_guest_os_name == "server" ? "Windows Server" : "Windows"
-  os_edition     = var.vm_guest_os_name == "server" ? "SERVER${upper(var.vm_guest_os_edition)}" : title(var.vm_guest_os_edition)
+  os_name        = strcontains(var.vm_guest_os_name, "server") ? "Windows Server" : "Windows"
+  os_edition     = strcontains(var.vm_guest_os_name, "server") ? "SERVER${upper(var.vm_guest_os_edition)}" : title(var.vm_guest_os_edition)
   os_image_key   = var.vm_guest_os_image_index == null ? "/IMAGE/NAME" : "/IMAGE/INDEX"
   os_image_name  = "${local.os_name} ${var.vm_guest_os_version} ${local.os_edition}"
   os_image_value = local.os_image_key == "/IMAGE/INDEX" ? var.vm_guest_os_image_index : local.os_image_name
@@ -43,8 +43,8 @@ locals {
       "${path.root}/answer_files/autounattend.pkrtpl.hcl",
       {
         firmware      = var.firmware,
-        username      = var.admin_username,
-        password      = var.admin_password,
+        username      = var.winrm_username,
+        password      = var.winrm_password,
         image_key     = local.os_image_key,
         image_value   = local.os_image_value,
         product_key   = var.vm_guest_product_key,
@@ -94,10 +94,10 @@ source "hyperv-iso" "windows" {
   // Communicator settings and credentials
   communicator   = "winrm"
   winrm_insecure = true
-  winrm_password = var.admin_password
+  winrm_password = var.winrm_password
   winrm_use_ntlm = true
   winrm_use_ssl  = true
-  winrm_username = var.admin_username
+  winrm_username = var.winrm_username
 
   // Output settings
   output_directory = "../../builds/VMs/hyperv"
@@ -137,10 +137,10 @@ source "virtualbox-iso" "windows" {
   // Communicator settings and credentials
   communicator   = "winrm"
   winrm_insecure = true
-  winrm_password = var.admin_password
+  winrm_password = var.winrm_password
   winrm_use_ntlm = true
   winrm_use_ssl  = true
-  winrm_username = var.admin_username
+  winrm_username = var.winrm_username
 
   // Output settings
   output_directory = "../../builds/VMs/virtualbox"
@@ -155,8 +155,8 @@ build {
 
   provisioner "powershell" {
     except            = ["hyperv-iso.windows"]
-    elevated_user     = var.admin_username
-    elevated_password = var.admin_password
+    elevated_user     = var.winrm_username
+    elevated_password = var.winrm_password
     script            = "${path.root}/scripts/Install-GuestTools.ps1"
   }
 
@@ -165,8 +165,8 @@ build {
   }
 
   provisioner "powershell" {
-    elevated_user     = var.admin_username
-    elevated_password = var.admin_password
+    elevated_user     = var.winrm_username
+    elevated_password = var.winrm_password
     script            = "${path.root}/scripts/Start-Cleanup.ps1"
   }
 

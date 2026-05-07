@@ -33,7 +33,7 @@ locals {
   // Defines the local variables for http content
   http_content = {
     "/preseed.cfg" = templatefile(
-      "${path.root}/http/preseed.pkrtpl.hcl",
+      "${path.root}/http/${var.vm_guest_os_name}/preseed.pkrtpl.hcl",
       {
         username          = var.ssh_username,
         password          = var.ssh_password,
@@ -45,7 +45,7 @@ locals {
 }
 
 // Defines the builder configuration blocks
-source "hyperv-iso" "debian" {
+source "hyperv-iso" "linux" {
   headless = var.headless
   vm_name  = local.vm_name
 
@@ -79,7 +79,7 @@ source "hyperv-iso" "debian" {
   output_directory = "../../builds/VMs/virtualbox"
 }
 
-source "virtualbox-iso" "debian" {
+source "virtualbox-iso" "linux" {
   headless = var.headless
   vm_name  = local.vm_name
 
@@ -121,8 +121,8 @@ source "virtualbox-iso" "debian" {
 
 build {
   sources = [
-    "source.hyperv-iso.debian",
-    "source.virtualbox-iso.debian"
+    "source.hyperv-iso.linux",
+    "source.virtualbox-iso.linux"
   ]
 
   provisioner "shell" {

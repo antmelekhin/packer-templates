@@ -127,8 +127,8 @@ build {
 
   provisioner "shell" {
     scripts = [
-      "../../_common/linux/install-guesttools.sh",
-      "../../_common/linux/cleanup.sh"
+      "${path.root}/scripts/install-guesttools.sh",
+      "${path.root}/scripts/cleanup.sh"
     ]
   }
 

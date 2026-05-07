@@ -58,10 +58,10 @@ locals {
   }
 
   cd_files = [
-    "../../_common/windows/Enable-WinRM.ps1",
-    "../../_common/windows/Prepare-WindowsHost.ps1",
-    "../../_common/windows/Start-Sysprep.ps1",
-    "../../_common/windows/PackerShutdown.bat"
+    "${path.root}/scripts/Enable-WinRM.ps1",
+    "${path.root}/scripts/Prepare-WindowsHost.ps1",
+    "${path.root}/scripts/Start-Sysprep.ps1",
+    "${path.root}/scripts/PackerShutdown.bat"
   ]
 }
 
@@ -157,7 +157,7 @@ build {
     except            = ["hyperv-iso.windows"]
     elevated_user     = var.admin_username
     elevated_password = var.admin_password
-    script            = "../../_common/windows/Install-GuestTools.ps1"
+    script            = "${path.root}/scripts/Install-GuestTools.ps1"
   }
 
   provisioner "windows-restart" {
@@ -167,15 +167,15 @@ build {
   provisioner "powershell" {
     elevated_user     = var.admin_username
     elevated_password = var.admin_password
-    script            = "../../_common/windows/Start-Cleanup.ps1"
+    script            = "${path.root}/scripts/Start-Cleanup.ps1"
   }
 
   provisioner "windows-restart" {}
 
   provisioner "file" {
     sources = [
-      "../../_common/windows/setup_complete/",
-      "../../_common/windows/Enable-WinRM.ps1"
+      "${path.root}/scripts/setup_complete/",
+      "${path.root}/scripts/Enable-WinRM.ps1"
     ]
     destination = "C:\\Windows\\Setup\\Scripts\\"
   }

@@ -33,7 +33,7 @@ variable "iso_urls" {
   EOF
   type        = set(string)
   default = [
-    "../../_images/debian-13.4.0-amd64-netinst.iso",
+    "../../images/debian-13.4.0-amd64-netinst.iso",
     "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.4.0-amd64-netinst.iso"
   ]
 }

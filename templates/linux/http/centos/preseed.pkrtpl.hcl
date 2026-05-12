@@ -1,15 +1,15 @@
 # Install from an installation tree on a remote server in text mode.
 install
 text
-url --url=http://vault.centos.org/centos/$releasever/os/$basearch/
+url --url=https://vault.centos.org/centos/$releasever/os/$basearch
 
 # Configures additional yum repositories that can be used as sources for package installation.
-repo --name=updates --baseurl=http://vault.centos.org/centos/$releasever/updates/$basearch/
-repo --name=epel --mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&arch=$basearch
+repo --name=updates --baseurl=https://vault.centos.org/centos/$releasever/updates/$basearch
+repo --name=epel --baseurl=https://archives.fedoraproject.org/pub/archive/epel/$releasever/$basearch
 
 # Localization settings.
 lang ${locale}
-keyboard ${keyboard}
+keyboard --xlayouts=${keyboard}
 
 # Sets the system time zone to timezone.
 timezone ${timezone}
@@ -49,6 +49,11 @@ epel-release
 
 # Post-installation Script.
 %post --erroronfail
+
+sed -i 's/mirror.centos.org/vault.centos.org/g' /etc/yum.repos.d/*.repo
+sed -i 's/^#.*baseurl=http/baseurl=http/g' /etc/yum.repos.d/*.repo
+sed -i 's/^mirrorlist=http/#mirrorlist=http/g' /etc/yum.repos.d/*.repo
+
 yum update -y
 
 echo "Defaults:${username} !requiretty" > /etc/sudoers.d/${username}

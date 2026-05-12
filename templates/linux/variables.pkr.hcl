@@ -126,7 +126,7 @@ variable "vm_guest_os_locale" {
 }
 
 variable "vm_guest_os_repository_mirror" {
-  description = "A repository mirror URL."
+  description = "A repository mirror URL. Not used in RHEL builds."
   type        = string
   default     = "mirror.yandex.ru"
 }

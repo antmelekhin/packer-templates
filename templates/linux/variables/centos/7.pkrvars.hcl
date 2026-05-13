@@ -12,6 +12,9 @@ iso_urls = [
   "https://mirror.yandex.ru/centos/centos/7/isos/x86_64/CentOS-7-x86_64-NetInstall-2009.iso"
 ]
 
+// Virtual Machine settings
+firmware = "bios"
+
 // Boot and Shutdown settings
 boot_command_bios = [
   "<esc>",

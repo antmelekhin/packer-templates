@@ -20,22 +20,23 @@ packer {
 // Defines the local variables
 locals {
   // Defines the local variables for iso selection
-  iso_checksum = var.iso_checksum == null ? "file:${var.iso_checksum_file}" : var.iso_checksum
-  iso_urls     = var.iso_url == null ? var.iso_urls : [var.iso_url]
+  iso_checksum    = var.iso_checksum == null ? "file:${var.iso_checksum_file}" : var.iso_checksum
+  iso_target_path = "../../images/${basename(var.iso_url)}"
+  iso_urls        = [local.iso_target_path, var.iso_url]
 
   // Defines the local variables for VM and box naming
   build_date = formatdate("YYYYMMDDhhmm", timestamp())
   vm_name    = "windows-${var.vm_guest_os_version}-${var.vm_guest_os_edition}_${var.firmware}_${local.build_date}"
 
   // Defines the image selection local variables
-  os_name        = var.vm_guest_os_name == "server" ? "Windows Server" : "Windows"
-  os_edition     = var.vm_guest_os_name == "server" ? "SERVER${upper(var.vm_guest_os_edition)}" : title(var.vm_guest_os_edition)
+  os_name        = strcontains(var.vm_guest_os_name, "server") ? "Windows Server" : "Windows"
+  os_edition     = strcontains(var.vm_guest_os_name, "server") ? "SERVER${upper(var.vm_guest_os_edition)}" : title(var.vm_guest_os_edition)
   os_image_key   = var.vm_guest_os_image_index == null ? "/IMAGE/NAME" : "/IMAGE/INDEX"
   os_image_name  = "${local.os_name} ${var.vm_guest_os_version} ${local.os_edition}"
   os_image_value = local.os_image_key == "/IMAGE/INDEX" ? var.vm_guest_os_image_index : local.os_image_name
 
   // Defines other local variables
-  vm_guest_input_locales = join(";", var.vm_guest_input_locales)
+  os_input_locales = join(";", var.vm_guest_os_input_locales)
 
   // Defines the local variables for cd content
   cd_content = {
@@ -43,25 +44,25 @@ locals {
       "${path.root}/answer_files/autounattend.pkrtpl.hcl",
       {
         firmware      = var.firmware,
-        username      = var.admin_username,
-        password      = var.admin_password,
         image_key     = local.os_image_key,
         image_value   = local.os_image_value,
-        product_key   = var.vm_guest_product_key,
-        timezone      = var.vm_guest_timezone,
-        input_locale  = local.vm_guest_input_locales,
-        system_locale = var.vm_guest_system_locale,
-        ui_language   = var.vm_guest_ui_language,
-        user_locale   = var.vm_guest_user_locale
+        input_locale  = local.os_input_locales,
+        password      = var.winrm_password,
+        product_key   = var.vm_guest_os_product_key,
+        system_locale = var.vm_guest_os_system_locale,
+        timezone      = var.vm_guest_os_timezone,
+        ui_language   = var.vm_guest_os_ui_language,
+        user_locale   = var.vm_guest_os_user_locale,
+        username      = var.winrm_username,
       }
     )
   }
 
   cd_files = [
-    "../../_common/windows/Enable-WinRM.ps1",
-    "../../_common/windows/Prepare-WindowsHost.ps1",
-    "../../_common/windows/Start-Sysprep.ps1",
-    "./scripts/PackerShutdown.bat"
+    "${path.root}/scripts/Enable-WinRM.ps1",
+    "${path.root}/scripts/PackerShutdown.bat",
+    "${path.root}/scripts/Prepare-WindowsHost.ps1",
+    "${path.root}/scripts/Start-Sysprep.ps1",
   ]
 }
 
@@ -81,10 +82,11 @@ source "hyperv-iso" "windows" {
   switch_name           = var.hyperv_switch_name
 
   // Removable media settings
-  cd_content   = local.cd_content
-  cd_files     = local.cd_files
-  iso_checksum = local.iso_checksum
-  iso_urls     = local.iso_urls
+  cd_content      = local.cd_content
+  cd_files        = local.cd_files
+  iso_checksum    = local.iso_checksum
+  iso_target_path = local.iso_target_path
+  iso_urls        = local.iso_urls
 
   // Boot and Shutdown settings
   boot_command     = var.boot_command
@@ -94,10 +96,10 @@ source "hyperv-iso" "windows" {
   // Communicator settings and credentials
   communicator   = "winrm"
   winrm_insecure = true
-  winrm_password = var.admin_password
+  winrm_password = var.winrm_password
   winrm_use_ntlm = true
   winrm_use_ssl  = true
-  winrm_username = var.admin_username
+  winrm_username = var.winrm_username
 
   // Output settings
   output_directory = "../../builds/VMs/hyperv"
@@ -124,10 +126,11 @@ source "virtualbox-iso" "windows" {
   guest_additions_path = "C:/Windows/Temp/GuestTools.iso"
 
   // Removable media settings
-  cd_content   = local.cd_content
-  cd_files     = local.cd_files
-  iso_checksum = local.iso_checksum
-  iso_urls     = local.iso_urls
+  cd_content      = local.cd_content
+  cd_files        = local.cd_files
+  iso_checksum    = local.iso_checksum
+  iso_target_path = local.iso_target_path
+  iso_urls        = local.iso_urls
 
   // Boot and Shutdown settings
   boot_command     = var.boot_command
@@ -137,10 +140,10 @@ source "virtualbox-iso" "windows" {
   // Communicator settings and credentials
   communicator   = "winrm"
   winrm_insecure = true
-  winrm_password = var.admin_password
+  winrm_password = var.winrm_password
   winrm_use_ntlm = true
   winrm_use_ssl  = true
-  winrm_username = var.admin_username
+  winrm_username = var.winrm_username
 
   // Output settings
   output_directory = "../../builds/VMs/virtualbox"
@@ -154,9 +157,10 @@ build {
   ]
 
   provisioner "powershell" {
-    elevated_user     = var.admin_username
-    elevated_password = var.admin_password
-    script            = "./scripts/Install-GuestTools.ps1"
+    except            = ["hyperv-iso.windows"]
+    elevated_user     = var.winrm_username
+    elevated_password = var.winrm_password
+    script            = "${path.root}/scripts/Install-GuestTools.ps1"
   }
 
   provisioner "windows-restart" {
@@ -164,17 +168,17 @@ build {
   }
 
   provisioner "powershell" {
-    elevated_user     = var.admin_username
-    elevated_password = var.admin_password
-    script            = "../../_common/windows/Start-Cleanup.ps1"
+    elevated_user     = var.winrm_username
+    elevated_password = var.winrm_password
+    script            = "${path.root}/scripts/Start-Cleanup.ps1"
   }
 
   provisioner "windows-restart" {}
 
   provisioner "file" {
     sources = [
-      "./scripts/setup_complete/",
-      "../../_common/windows/Enable-WinRM.ps1"
+      "${path.root}/scripts/setup_complete/",
+      "${path.root}/scripts/Enable-WinRM.ps1"
     ]
     destination = "C:\\Windows\\Setup\\Scripts\\"
   }
@@ -183,11 +187,11 @@ build {
     content = templatefile(
       "${path.root}/answer_files/unattend.pkrtpl.hcl",
       {
-        timezone      = var.vm_guest_timezone,
-        input_locale  = local.vm_guest_input_locales,
-        system_locale = var.vm_guest_system_locale,
-        ui_language   = var.vm_guest_ui_language,
-        user_locale   = var.vm_guest_user_locale,
+        input_locale  = local.os_input_locales,
+        system_locale = var.vm_guest_os_system_locale,
+        timezone      = var.vm_guest_os_timezone,
+        ui_language   = var.vm_guest_os_ui_language,
+        user_locale   = var.vm_guest_os_user_locale,
       }
     )
     destination = "C:\\Windows\\System32\\Sysprep\\unattend.xml"

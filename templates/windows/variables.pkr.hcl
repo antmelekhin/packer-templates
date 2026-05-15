@@ -26,26 +26,17 @@ variable "iso_url" {
   default     = null
 }
 
-variable "iso_urls" {
-  description = <<-EOF
-  Multiple URLs for the ISO to download.
-  `iso_urls` is ignored if `iso_url` is set.
-  EOF
-  type        = set(string)
-  default     = null
-}
-
 // Virtual Machine settings
 variable "cpus" {
   description = "The number of cpus to use for building the VM."
   type        = number
-  default     = 1
+  default     = 2
 }
 
 variable "disk_size" {
   description = "The size, in megabytes, of the hard disk to create for the VM."
   type        = number
-  default     = 12400
+  default     = 51200
 }
 
 variable "firmware" {
@@ -57,7 +48,7 @@ variable "firmware" {
 variable "memory" {
   description = "The amount of memory to use for building the VM in megabytes."
   type        = number
-  default     = 1024
+  default     = 4096
 }
 
 // Hyper V specific settings
@@ -101,53 +92,74 @@ variable "vboxmanage" {
 }
 
 // Guest OS settings
-variable "admin_username" {
-  description = "The administrator username that will be create and use to connect to SSH."
+variable "vm_guest_os_product_key" {
+  description = "The product key used to install and to activate Windows."
   type        = string
-  default     = "vagrant"
+  default     = ""
 }
 
-variable "admin_password" {
-  description = "The administrator's password."
-  type        = string
-  default     = "vagrant"
-}
-
-variable "vm_guest_distr_name" {
-  description = "The guest Linux distribution name. Used for naming."
+variable "vm_guest_os_name" {
+  description = "The guest operating system name. Used for naming."
   type        = string
   default     = null
 }
 
-variable "vm_guest_distr_version" {
-  description = "The guest Linux distribution version. Used for naming."
+variable "vm_guest_os_version" {
+  description = "The guest operating system version. Used for naming."
   type        = string
   default     = null
 }
 
-variable "vm_guest_repository_mirror" {
-  description = "A repository mirror URL. Not used in RHEL builds."
+variable "vm_guest_os_edition" {
+  description = "The guest operating system edition. Used for naming."
   type        = string
-  default     = "mirror.yandex.ru"
+  default     = null
 }
 
-variable "vm_guest_timezone" {
+variable "vm_guest_os_image_index" {
+  description = "Uses the index number to select the image to install."
+  type        = number
+  default     = null
+}
+
+variable "vm_guest_os_input_locales" {
+  description = "The system input locale and the keyboard layout."
+  type        = set(string)
+  default = [
+    "0409:00000409",
+    "0419:00000419"
+  ]
+}
+
+variable "vm_guest_os_system_locale" {
+  description = "The language for non-Unicode programs."
+  type        = string
+  default     = "ru-RU"
+}
+
+variable "vm_guest_os_timezone" {
   description = "The computer's time zone."
   type        = string
-  default     = "Europe/Moscow"
+  default     = "Russian Standard Time"
+}
+
+variable "vm_guest_os_ui_language" {
+  description = "The system default user interface (UI) language."
+  type        = string
+  default     = "en-US"
+}
+
+variable "vm_guest_os_user_locale" {
+  description = "The per-user settings used for formatting dates, times, currency, and numbers."
+  type        = string
+  default     = "ru-RU"
 }
 
 // Boot and Shutdown settings
-variable "boot_command_bios" {
-  description = "This is an array of commands to type when the virtual machine is first booted (BIOS)."
+variable "boot_command" {
+  description = "This is an array of commands to type when the virtual machine is first booted."
   type        = list(string)
-  default     = null
-}
-
-variable "boot_command_efi" {
-  description = "This is an array of commands to type when the virtual machine is first booted (EFI)."
-  type        = list(string)
-  default     = null
+  default     = ["<spacebar>"]
 }
 
 variable "boot_wait" {
@@ -162,5 +174,18 @@ variable "shutdown_command" {
   By default this command run sysprep utility and shutdown the machine.
   EOF
   type        = string
-  default     = "sudo shutdown -P now"
+  default     = "E:\\PackerShutdown.bat"
+}
+
+// Communicator settings and credentials
+variable "winrm_password" {
+  description = "The administrator's password."
+  type        = string
+  default     = "vagrant"
+}
+
+variable "winrm_username" {
+  description = "The administrator username that will be create and use to connect to WinRM."
+  type        = string
+  default     = "vagrant"
 }

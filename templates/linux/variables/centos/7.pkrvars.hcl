@@ -1,13 +1,17 @@
 // Guest OS settings
-vm_guest_distr_name    = "centos"
-vm_guest_distr_version = "7"
+vm_guest_os_name    = "centos"
+vm_guest_os_version = "7"
 
 // VirtualBox specific settings
 vbox_guest_os_type = "RedHat_64"
 
 // Removable media settings
-iso_checksum = "b79079ad71cc3c5ceb3561fff348a1b67ee37f71f4cddfec09480d4589c191d6"
-iso_url      = "../../_images/CentOS-7-x86_64-NetInstall-2009.iso"
+iso_checksum_file = "https://mirror.yandex.ru/centos/centos/7/isos/x86_64/sha256sum.txt"
+iso_url           = "https://mirror.yandex.ru/centos/centos/7/isos/x86_64/CentOS-7-x86_64-NetInstall-2009.iso"
+
+
+// Virtual Machine settings
+firmware = "bios"
 
 // Boot and Shutdown settings
 boot_command_bios = [

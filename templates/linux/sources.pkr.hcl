@@ -20,12 +20,13 @@ packer {
 // Defines the local variables
 locals {
   // Defines the local variables for iso selection
-  iso_checksum = var.iso_checksum == null ? "file:${var.iso_checksum_file}" : var.iso_checksum
-  iso_urls     = var.iso_url == null ? var.iso_urls : [var.iso_url]
+  iso_checksum    = var.iso_checksum == null ? "file:${var.iso_checksum_file}" : var.iso_checksum
+  iso_target_path = "../../images/${basename(var.iso_url)}"
+  iso_urls        = [local.iso_target_path, var.iso_url]
 
   // Defines the local variables for VM and box naming
   build_date = formatdate("YYYYMMDDhhmm", timestamp())
-  vm_name    = "${var.vm_guest_distr_name}-${var.vm_guest_distr_version}_${var.firmware}_${local.build_date}"
+  vm_name    = "${var.vm_guest_os_name}-${var.vm_guest_os_version}_${var.firmware}_${local.build_date}"
 
   // Defines the firmware local variables
   boot_command = var.firmware == "efi" ? var.boot_command_efi : var.boot_command_bios
@@ -33,12 +34,14 @@ locals {
   // Defines the local variables for http content
   http_content = {
     "/preseed.cfg" = templatefile(
-      "${path.root}/answer_files/${var.vm_guest_distr_name}/preseed.pkrtpl.hcl",
+      "${path.root}/http/${var.vm_guest_os_name}/preseed.pkrtpl.hcl",
       {
-        username          = var.admin_username,
-        password          = var.admin_password,
-        repository_mirror = var.vm_guest_repository_mirror,
-        timezone          = var.vm_guest_timezone
+        keyboard          = var.vm_guest_os_keyboard,
+        locale            = var.vm_guest_os_locale,
+        password          = var.ssh_password,
+        repository_mirror = var.vm_guest_os_repository_mirror,
+        timezone          = var.vm_guest_os_timezone,
+        username          = var.ssh_username,
       }
     )
   }
@@ -60,9 +63,10 @@ source "hyperv-iso" "linux" {
   switch_name           = var.hyperv_switch_name
 
   // Removable media settings
-  http_content = local.http_content
-  iso_checksum = local.iso_checksum
-  iso_urls     = local.iso_urls
+  http_content    = local.http_content
+  iso_checksum    = local.iso_checksum
+  iso_target_path = local.iso_target_path
+  iso_urls        = local.iso_urls
 
   // Boot and Shutdown settings
   boot_command     = local.boot_command
@@ -71,9 +75,9 @@ source "hyperv-iso" "linux" {
 
   // Communicator settings and credentials
   communicator = "ssh"
-  ssh_password = var.admin_password
+  ssh_password = var.ssh_password
   ssh_timeout  = "30m"
-  ssh_username = var.admin_username
+  ssh_username = var.ssh_username
 
   // Output settings
   output_directory = "../../builds/VMs/virtualbox"
@@ -100,9 +104,10 @@ source "virtualbox-iso" "linux" {
   guest_additions_path = "/tmp/VBoxGuestAdditions.iso"
 
   // Removable media settings
-  http_content = local.http_content
-  iso_checksum = local.iso_checksum
-  iso_urls     = local.iso_urls
+  http_content    = local.http_content
+  iso_checksum    = local.iso_checksum
+  iso_target_path = local.iso_target_path
+  iso_urls        = local.iso_urls
 
   // Boot and Shutdown settings
   boot_command     = local.boot_command
@@ -111,9 +116,9 @@ source "virtualbox-iso" "linux" {
 
   // Communicator settings and credentials
   communicator = "ssh"
-  ssh_password = var.admin_password
+  ssh_password = var.ssh_password
   ssh_timeout  = "30m"
-  ssh_username = var.admin_username
+  ssh_username = var.ssh_username
 
   // Output settings
   output_directory = "../../builds/VMs/virtualbox"
@@ -127,8 +132,8 @@ build {
 
   provisioner "shell" {
     scripts = [
-      "./scripts/install-guesttools.sh",
-      "../../_common/linux/cleanup.sh"
+      "${path.root}/scripts/install-guesttools.sh",
+      "${path.root}/scripts/cleanup.sh"
     ]
   }
 

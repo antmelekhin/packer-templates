@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/antmelekhin/packer-templates/compare/v1.1.0...v1.1.1) (2026-05-15)
+
+
+### Code Refactoring
+
+* updated templates and directories structure ([#3](https://github.com/antmelekhin/packer-templates/issues/3)) ([9d1ad06](https://github.com/antmelekhin/packer-templates/commit/9d1ad065023b9770246f96546363bd1d3e4f95db))
+
 ## [1.1.0](https://github.com/antmelekhin/packer-templates/compare/v1.0.0...v1.1.0) (2024-11-01)
 
 

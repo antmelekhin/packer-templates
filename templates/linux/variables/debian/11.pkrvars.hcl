@@ -7,10 +7,7 @@ vbox_guest_os_type = "Debian_64"
 
 // Removable media settings
 iso_checksum_file = "https://cdimage.debian.org/cdimage/archive/11.11.0/amd64/iso-cd/SHA256SUMS"
-iso_urls = [
-  "../../images/debian-11.11.0-amd64-netinst.iso",
-  "https://cdimage.debian.org/cdimage/archive/11.11.0/amd64/iso-cd/debian-11.11.0-amd64-netinst.iso"
-]
+iso_url           = "https://cdimage.debian.org/cdimage/archive/11.11.0/amd64/iso-cd/debian-11.11.0-amd64-netinst.iso"
 
 // Boot and Shutdown settings
 boot_command_bios = [

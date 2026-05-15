@@ -7,10 +7,8 @@ vbox_guest_os_type = "RedHat_64"
 
 // Removable media settings
 iso_checksum_file = "https://mirror.yandex.ru/centos/centos/7/isos/x86_64/sha256sum.txt"
-iso_urls = [
-  "../../images/CentOS-7-x86_64-NetInstall-2009.iso",
-  "https://mirror.yandex.ru/centos/centos/7/isos/x86_64/CentOS-7-x86_64-NetInstall-2009.iso"
-]
+iso_url           = "https://mirror.yandex.ru/centos/centos/7/isos/x86_64/CentOS-7-x86_64-NetInstall-2009.iso"
+
 
 // Virtual Machine settings
 firmware = "bios"

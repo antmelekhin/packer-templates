@@ -26,15 +26,6 @@ variable "iso_url" {
   default     = null
 }
 
-variable "iso_urls" {
-  description = <<-EOF
-  Multiple URLs for the ISO to download.
-  `iso_urls` is ignored if `iso_url` is set.
-  EOF
-  type        = set(string)
-  default     = null
-}
-
 // Virtual Machine settings
 variable "cpus" {
   description = "The number of cpus to use for building the VM."

@@ -20,8 +20,9 @@ packer {
 // Defines the local variables
 locals {
   // Defines the local variables for iso selection
-  iso_checksum = var.iso_checksum == null ? "file:${var.iso_checksum_file}" : var.iso_checksum
-  iso_urls     = var.iso_url == null ? var.iso_urls : [var.iso_url]
+  iso_checksum    = var.iso_checksum == null ? "file:${var.iso_checksum_file}" : var.iso_checksum
+  iso_target_path = "../../images/${basename(var.iso_url)}"
+  iso_urls        = [local.iso_target_path, var.iso_url]
 
   // Defines the local variables for VM and box naming
   build_date = formatdate("YYYYMMDDhhmm", timestamp())
@@ -62,9 +63,10 @@ source "hyperv-iso" "linux" {
   switch_name           = var.hyperv_switch_name
 
   // Removable media settings
-  http_content = local.http_content
-  iso_checksum = local.iso_checksum
-  iso_urls     = local.iso_urls
+  http_content    = local.http_content
+  iso_checksum    = local.iso_checksum
+  iso_target_path = local.iso_target_path
+  iso_urls        = local.iso_urls
 
   // Boot and Shutdown settings
   boot_command     = local.boot_command
@@ -102,9 +104,10 @@ source "virtualbox-iso" "linux" {
   guest_additions_path = "/tmp/VBoxGuestAdditions.iso"
 
   // Removable media settings
-  http_content = local.http_content
-  iso_checksum = local.iso_checksum
-  iso_urls     = local.iso_urls
+  http_content    = local.http_content
+  iso_checksum    = local.iso_checksum
+  iso_target_path = local.iso_target_path
+  iso_urls        = local.iso_urls
 
   // Boot and Shutdown settings
   boot_command     = local.boot_command

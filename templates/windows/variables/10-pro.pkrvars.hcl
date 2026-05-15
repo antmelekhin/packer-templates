@@ -1,8 +1,8 @@
 // Guest OS settings
-vm_guest_os_name     = "windows"
-vm_guest_os_version  = "10"
-vm_guest_os_edition  = "pro"
-vm_guest_product_key = "W269N-WFGWX-YVC9B-4J6C9-T83GX"
+vm_guest_os_name        = "windows"
+vm_guest_os_version     = "10"
+vm_guest_os_edition     = "pro"
+vm_guest_os_product_key = "W269N-WFGWX-YVC9B-4J6C9-T83GX"
 
 // VirtualBox specific settings
 vbox_guest_os_type = "Windows10_64"
